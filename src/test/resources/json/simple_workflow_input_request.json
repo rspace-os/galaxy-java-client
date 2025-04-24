@@ -1,0 +1,21 @@
+{
+  "replacement_dict": {},
+  "inputs": {
+    "0": {
+      "batch": false,
+      "product": false,
+      "values": [
+        {
+          "id": "4838ba20a6d8676517a6a029b53330a0",
+          "src": "hda",
+          "map_over_type": null
+        }
+      ]
+    }
+  },
+  "inputs_by": "step_index",
+  "batch": true,
+  "use_cached_job": false,
+  "require_exact_tool_versions": false,
+  "history_id": "1748fbc00d2283c5"
+}

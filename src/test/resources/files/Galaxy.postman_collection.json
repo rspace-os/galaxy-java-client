@@ -1,0 +1,996 @@
+{
+	"info": {
+		"_postman_id": "cbea3232-e162-495e-9331-660b531d6c9c",
+		"name": "Galaxy",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "39330706"
+	},
+	"item": [
+		{
+			"name": "Upload File",
+			"item": [
+				{
+					"name": "Upload - 1st step",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "x-api-key",
+								"value": "1e8529a6b6d44751cc679081869cc480",
+								"type": "text"
+							},
+							{
+								"key": "upload-length",
+								"value": "457",
+								"type": "text"
+							},
+							{
+								"key": "",
+								"value": "",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"url": {
+							"raw": "https://usegalaxy.eu/api/upload/resumable_upload",
+							"protocol": "https",
+							"host": [
+								"usegalaxy",
+								"eu"
+							],
+							"path": [
+								"api",
+								"upload",
+								"resumable_upload"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Upload - 2nd step",
+					"protocolProfileBehavior": {
+						"disabledSystemHeaders": {
+							"content-type": true
+						}
+					},
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "x-api-key",
+								"value": "1e8529a6b6d44751cc679081869cc480",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/offset+octet-stream",
+								"type": "text"
+							},
+							{
+								"key": "upload-offset",
+								"value": "0",
+								"type": "text"
+							},
+							{
+								"key": "content-length",
+								"value": "457",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "CTGTCTCTTATACA CATCTCCGAGCCCACGAGAC\tCTGTCTCTTAT ACACAT   CTCCGAGCCCACGAGAG\nCTGTCT  CTTATACACATCTCCGAGCCCACGAGAC\tCTGTCTCT TATACAC ATCTCCGAGCCCACGAGAG\nCTGTC TCTTATACACATCT C G A G C C CACGAGAC\tCTGTCTCTTATA CATATCTCCGAGCCCACGAGAG\nCTGTCTCTTAT ACACATC TGCGAG CCACGAGAC\tCTGTCT CTTATAGACATCTCCGAGCCCACGAGAG\nCTGTCTCT TATACACATCTACGAGCCCACGAGAC\tCTGTCT CTTT TACACATCTCCGAGC CCACGAGAG\nCTGTCTCT TATACAC ATCTGAG AGCCCACGAGAC\tCTGTCTG TTATACACATCT CCGAGCCCACGAGAG\nF  I  N  E \nC I A O\nCIAO\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://usegalaxy.eu/api/upload/resumable_upload/5c54bbcf-e1f5-4285-bbaa-6300301c78e3",
+							"protocol": "https",
+							"host": [
+								"usegalaxy",
+								"eu"
+							],
+							"path": [
+								"api",
+								"upload",
+								"resumable_upload",
+								"5c54bbcf-e1f5-4285-bbaa-6300301c78e3"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Upload - 3rd step",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "x-api-key",
+								"value": "1e8529a6b6d44751cc679081869cc480",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"history_id\": \"cbc8d9f78aef06cd\",\n  \"targets\": [\n    {\n      \"destination\": {\n        \"type\": \"hdas\"\n      },\n      \"elements\": [\n        {\n          \"src\": \"files\",\n          \"dbkey\": \"?\",\n          \"ext\": \"auto\",\n          \"name\": \"upload_in_2_calls.txt\",\n          \"space_to_tab\": false,\n          \"to_posix_lines\": true,\n          \"deferred\": false\n        }\n      ]\n    }\n  ],\n  \"auto_decompress\": true,\n  \"files_0|file_data\": {\n    \"session_id\": \"5c54bbcf-e1f5-4285-bbaa-6300301c78e3\",\n    \"name\": \"upload_in_2_calls.txt\"\n  }\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://usegalaxy.eu/api/tools/fetch",
+							"protocol": "https",
+							"host": [
+								"usegalaxy",
+								"eu"
+							],
+							"path": [
+								"api",
+								"tools",
+								"fetch"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Collection-pair dataset",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "x-api-key",
+								"value": "1e8529a6b6d44751cc679081869cc480",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"collection_type\": \"list:paired\",\n    \"copy_elements\": true,\n    \"name\": \"test 2\",\n    \"element_identifiers\": [\n        {\n            \"collection_type\": \"paired\",\n            \"src\": \"new_collection\",\n            \"name\": \"GSM461177 subsampled\",\n            \"element_identifiers\": [\n                {\n                    \"name\": \"forward\",\n                    \"id\": \"4838ba20a6d86765ca578000e94bbeed\",\n                    \"src\": \"hda\"\n                },\n                {\n                    \"name\": \"reverse\",\n                    \"id\": \"4838ba20a6d86765f49e684bceefd4c6\",\n                    \"src\": \"hda\"\n                }\n            ]\n        }\n    ],\n    \"hide_source_items\": false,\n    \"options\": {},\n    \"instance_type\": \"history\",\n    \"type\": \"dataset_collection\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://usegalaxy.eu/api/histories/3a26d07b2bcc571d/contents",
+							"protocol": "https",
+							"host": [
+								"usegalaxy",
+								"eu"
+							],
+							"path": [
+								"api",
+								"histories",
+								"3a26d07b2bcc571d",
+								"contents"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Response",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "x-api-key",
+										"value": "1e8529a6b6d44751cc679081869cc480",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"collection_type\": \"list:paired\",\n    \"copy_elements\": true,\n    \"name\": \"test_nik_postman_same_file_paired\",\n    \"element_identifiers\": [\n        {\n            \"collection_type\": \"paired\",\n            \"src\": \"new_collection\",\n            \"name\": \"GSM461177 subsampled\",\n            \"element_identifiers\": [\n                {\n                    \"name\": \"forward\",\n                    \"id\": \"4838ba20a6d86765ca578000e94bbeed\",\n                    \"src\": \"hda\"\n                },\n                {\n                    \"name\": \"reverse\",\n                    \"id\": \"4838ba20a6d86765ca578000e94bbeed\",\n                    \"src\": \"hda\"\n                }\n            ]\n        }\n    ],\n    \"hide_source_items\": false,\n    \"options\": {},\n    \"instance_type\": \"history\",\n    \"type\": \"dataset_collection\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "https://usegalaxy.eu/api/histories/cbc8d9f78aef06cd/contents",
+									"protocol": "https",
+									"host": [
+										"usegalaxy",
+										"eu"
+									],
+									"path": [
+										"api",
+										"histories",
+										"cbc8d9f78aef06cd",
+										"contents"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Encoding",
+									"value": "gzip"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Date",
+									"value": "Fri, 16 May 2025 11:32:49 GMT"
+								},
+								{
+									"key": "Server",
+									"value": "nginx/1.14.1"
+								},
+								{
+									"key": "Vary",
+									"value": "Accept-Encoding"
+								},
+								{
+									"key": "X-Clacks-Overhead",
+									"value": "GNU James Taylor (@jxtx) Simon Gladman (@slugger70) Jim Johnson (@jj-umn)"
+								},
+								{
+									"key": "X-Request-Id",
+									"value": "759e811a434949ac8a720c7769d9063b"
+								},
+								{
+									"key": "Transfer-Encoding",
+									"value": "chunked"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"model_class\": \"HistoryDatasetCollectionAssociation\",\n    \"id\": \"243417b01bef49dc\",\n    \"name\": \"test_nik_postman_same_file_paired\",\n    \"history_id\": \"cbc8d9f78aef06cd\",\n    \"hid\": 6,\n    \"deleted\": false,\n    \"visible\": true,\n    \"type\": \"collection\",\n    \"create_time\": \"2025-05-16T11:32:49.822762\",\n    \"update_time\": \"2025-05-16T11:32:49.822764\",\n    \"url\": \"/api/histories/cbc8d9f78aef06cd/contents/dataset_collections/243417b01bef49dc\",\n    \"tags\": [],\n    \"history_content_type\": \"dataset_collection\",\n    \"collection_type\": \"list:paired\",\n    \"populated_state\": \"ok\",\n    \"populated_state_message\": null,\n    \"element_count\": 1,\n    \"elements_datatypes\": [\n        \"fastqsanger\"\n    ],\n    \"job_source_id\": null,\n    \"job_source_type\": null,\n    \"job_state_summary\": {\n        \"all_jobs\": 0,\n        \"new\": 0,\n        \"waiting\": 0,\n        \"running\": 0,\n        \"error\": 0,\n        \"paused\": 0,\n        \"skipped\": 0,\n        \"resubmitted\": 0,\n        \"queued\": 0,\n        \"ok\": 0,\n        \"failed\": 0,\n        \"deleted\": 0,\n        \"upload\": 0\n    },\n    \"contents_url\": \"/api/dataset_collections/243417b01bef49dc/contents/11ac94870d0bb33afc012c327fc51bee\",\n    \"collection_id\": \"11ac94870d0bb33afc012c327fc51bee\",\n    \"populated\": true,\n    \"elements\": [\n        {\n            \"model_class\": \"DatasetCollectionElement\",\n            \"id\": \"4838ba20a6d86765e2fc3f4a8e62ca50\",\n            \"element_index\": 0,\n            \"element_identifier\": \"GSM461177 subsampled\",\n            \"element_type\": \"dataset_collection\",\n            \"object\": {\n                \"model_class\": \"DatasetCollection\",\n                \"id\": \"11ac94870d0bb33ae676b495ef1455f9\",\n                \"collection_type\": \"paired\",\n                \"populated\": true,\n                \"element_count\": 2,\n                \"elements\": [\n                    {\n                        \"model_class\": \"DatasetCollectionElement\",\n                        \"id\": \"4838ba20a6d867651bc976f7f3703075\",\n                        \"element_index\": 0,\n                        \"element_identifier\": \"forward\",\n                        \"element_type\": \"hda\",\n                        \"object\": {\n                            \"model_class\": \"HistoryDatasetAssociation\",\n                            \"id\": \"4838ba20a6d867658f17d7ba833f2633\",\n                            \"state\": \"ok\",\n                            \"hda_ldda\": \"hda\",\n                            \"history_id\": \"cbc8d9f78aef06cd\",\n                            \"tags\": [],\n                            \"purged\": false,\n                            \"uuid\": \"5d58c64d-b22d-41a5-8c52-10365257d008\",\n                            \"hid\": 4,\n                            \"file_ext\": \"fastqsanger\",\n                            \"peek\": \"<table cellspacing=\\\"0\\\" cellpadding=\\\"3\\\"><tr><td>@SRR031714.4 HWI-EAS299_130MNEAAXX:2:1:1729:593/1</td></tr><tr><td>GCCGGGAAGAGGATACGTCCGTCGATCGTGTGTCCAG</td></tr><tr><td>+</td></tr><tr><td>IIIIIIIIIIIIIIIIIIIIIEIII$II(I8I;II63</td></tr><tr><td>@SRR031714.6 HWI-EAS299_130MNEAAXX:2:1:1747:596/1</td></tr></table>\",\n                            \"name\": \"GSM461177 subsampled.fastqsanger\",\n                            \"deleted\": false,\n                            \"visible\": false,\n                            \"history_content_type\": \"dataset\",\n                            \"file_size\": 142867948,\n                            \"create_time\": \"2025-05-16T11:32:49.830101\",\n                            \"update_time\": \"2025-05-16T11:32:49.830106\",\n                            \"data_type\": \"galaxy.datatypes.sequence.FastqSanger\",\n                            \"genome_build\": \"?\",\n                            \"validated_state\": \"unknown\",\n                            \"validated_state_message\": null,\n                            \"misc_info\": \"uploaded fastqsanger file\",\n                            \"misc_blurb\": \"136.2 MB\",\n                            \"metadata_dbkey\": null,\n                            \"metadata_data_lines\": null,\n                            \"metadata_sequences\": null\n                        }\n                    },\n                    {\n                        \"model_class\": \"DatasetCollectionElement\",\n                        \"id\": \"4838ba20a6d86765cc0b820b19190b9d\",\n                        \"element_index\": 1,\n                        \"element_identifier\": \"reverse\",\n                        \"element_type\": \"hda\",\n                        \"object\": {\n                            \"model_class\": \"HistoryDatasetAssociation\",\n                            \"id\": \"4838ba20a6d867657dd6cb874c561639\",\n                            \"state\": \"ok\",\n                            \"hda_ldda\": \"hda\",\n                            \"history_id\": \"cbc8d9f78aef06cd\",\n                            \"tags\": [],\n                            \"purged\": false,\n                            \"uuid\": \"5d58c64d-b22d-41a5-8c52-10365257d008\",\n                            \"hid\": 5,\n                            \"file_ext\": \"fastqsanger\",\n                            \"peek\": \"<table cellspacing=\\\"0\\\" cellpadding=\\\"3\\\"><tr><td>@SRR031714.4 HWI-EAS299_130MNEAAXX:2:1:1729:593/1</td></tr><tr><td>GCCGGGAAGAGGATACGTCCGTCGATCGTGTGTCCAG</td></tr><tr><td>+</td></tr><tr><td>IIIIIIIIIIIIIIIIIIIIIEIII$II(I8I;II63</td></tr><tr><td>@SRR031714.6 HWI-EAS299_130MNEAAXX:2:1:1747:596/1</td></tr></table>\",\n                            \"name\": \"GSM461177 subsampled.fastqsanger\",\n                            \"deleted\": false,\n                            \"visible\": false,\n                            \"history_content_type\": \"dataset\",\n                            \"file_size\": 142867948,\n                            \"create_time\": \"2025-05-16T11:32:49.830108\",\n                            \"update_time\": \"2025-05-16T11:32:49.830109\",\n                            \"data_type\": \"galaxy.datatypes.sequence.FastqSanger\",\n                            \"genome_build\": \"?\",\n                            \"validated_state\": \"unknown\",\n                            \"validated_state_message\": null,\n                            \"misc_info\": \"uploaded fastqsanger file\",\n                            \"misc_blurb\": \"136.2 MB\",\n                            \"metadata_dbkey\": null,\n                            \"metadata_data_lines\": null,\n                            \"metadata_sequences\": null\n                        }\n                    }\n                ]\n            }\n        }\n    ],\n    \"implicit_collection_jobs_id\": null\n}"
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "Download File",
+			"item": [
+				{
+					"name": "Output dataset for a give job",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "x-api-key",
+								"value": "1e8529a6b6d44751cc679081869cc480",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "https://usegalaxy.eu/api/jobs/11ac94870d0bb33a2af8b09670fdd0f6/outputs",
+							"protocol": "https",
+							"host": [
+								"usegalaxy",
+								"eu"
+							],
+							"path": [
+								"api",
+								"jobs",
+								"11ac94870d0bb33a2af8b09670fdd0f6",
+								"outputs"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Describe a dataset",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "x-api-key",
+								"value": "1e8529a6b6d44751cc679081869cc480",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "https://usegalaxy.eu/api/datasets/4838ba20a6d86765611a1b3190811719",
+							"protocol": "https",
+							"host": [
+								"usegalaxy",
+								"eu"
+							],
+							"path": [
+								"api",
+								"datasets",
+								"4838ba20a6d86765611a1b3190811719"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Describe a dataset Collection",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "x-api-key",
+								"value": "1e8529a6b6d44751cc679081869cc480",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "https://usegalaxy.eu/api/datasets/4838ba20a6d86765611a1b3190811719",
+							"protocol": "https",
+							"host": [
+								"usegalaxy",
+								"eu"
+							],
+							"path": [
+								"api",
+								"datasets",
+								"4838ba20a6d86765611a1b3190811719"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Download a dataset per history",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "x-api-key",
+								"value": "1e8529a6b6d44751cc679081869cc480",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "https://usegalaxy.eu/api/histories/1748fbc00d2283c5/contents/4838ba20a6d86765611a1b3190811719/display",
+							"protocol": "https",
+							"host": [
+								"usegalaxy",
+								"eu"
+							],
+							"path": [
+								"api",
+								"histories",
+								"1748fbc00d2283c5",
+								"contents",
+								"4838ba20a6d86765611a1b3190811719",
+								"display"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Workflow invocation and status",
+			"item": [
+				{
+					"name": "Invoke SIMPLE Workflow with dataset",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "x-api-key",
+								"value": "1e8529a6b6d44751cc679081869cc480",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"replacement_dict\": {},\n  \"inputs\": {\n    \"0\": {\n      \"batch\": false,\n      \"product\": false,\n      \"values\": [\n        {\n          \"id\": \"4838ba20a6d8676517a6a029b53330a0\",\n          \"src\": \"hda\",\n          \"map_over_type\": null\n        }\n      ]\n    }\n  },\n  \"inputs_by\": \"step_index\",\n  \"batch\": true,\n  \"use_cached_job\": false,\n  \"require_exact_tool_versions\": false,\n  \"history_id\": \"1748fbc00d2283c5\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://usegalaxy.eu/api/workflows/992cc472e5f300f1/invocations",
+							"protocol": "https",
+							"host": [
+								"usegalaxy",
+								"eu"
+							],
+							"path": [
+								"api",
+								"workflows",
+								"992cc472e5f300f1",
+								"invocations"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Invoke PE Workflow with dataset",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "x-api-key",
+								"value": "1e8529a6b6d44751cc679081869cc480",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"replacement_dict\": {},\n    \"inputs\": {\n        \"0\": {\n            \"batch\": false,\n            \"product\": false,\n            \"values\": [\n                {\n                    \"id\": \"4c43511826fb67eb\",\n                    \"src\": \"hdca\",\n                    \"map_over_type\": null\n                }\n            ]\n        },\n        \"1\": null,\n        \"2\": null,\n        \"3\": false,\n        \"4\": \"apiMel3\",\n        \"5\": {\n            \"batch\": false,\n            \"product\": false,\n            \"values\": [\n                {\n                    \"id\": \"4838ba20a6d8676517a6a029b53330a0\",\n                    \"src\": \"hda\",\n                    \"map_over_type\": null\n                }\n            ]\n        },\n        \"6\": \"stranded - forward\",\n        \"7\": false,\n        \"8\": false,\n        \"9\": null,\n        \"10\": false\n    },\n    \"inputs_by\": \"step_index\",\n    \"batch\": true,\n    \"use_cached_job\": false,\n    \"require_exact_tool_versions\": false,\n    \"history_id\": \"1748fbc00d2283c5\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://usegalaxy.eu/api/workflows/992cc472e5f300f1/invocations",
+							"protocol": "https",
+							"host": [
+								"usegalaxy",
+								"eu"
+							],
+							"path": [
+								"api",
+								"workflows",
+								"992cc472e5f300f1",
+								"invocations"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "response",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "x-api-key",
+										"value": "1e8529a6b6d44751cc679081869cc480",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"inputs\": {\n        \"0\": {\n            \"batch\": false,\n            \"product\": false,\n            \"values\": [\n                {\n                    \"id\": \"243417b01bef49dc\",\n                    \"src\": \"hdca\",\n                    \"map_over_type\": null\n                }\n            ]\n        },\n        \"1\": null,\n        \"2\": null,\n        \"3\": false,\n        \"4\": \"apiMel3\",\n        \"5\": {\n            \"batch\": false,\n            \"product\": false,\n            \"values\": [\n                {\n                    \"id\": \"4838ba20a6d8676517a6a029b53330a0\",\n                    \"src\": \"hda\",\n                    \"map_over_type\": null\n                }\n            ]\n        },\n        \"6\": \"stranded - forward\",\n        \"7\": false,\n        \"8\": false,\n        \"9\": null,\n        \"10\": false\n    },\n    \"inputs_by\": \"step_index\",\n    \"batch\": true,\n    \"use_cached_job\": false,\n    \"require_exact_tool_versions\": false,\n    \"history_id\": \"cbc8d9f78aef06cd\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "https://usegalaxy.eu/api/workflows/2d08a73dd8ff99e9/invocations",
+									"protocol": "https",
+									"host": [
+										"usegalaxy",
+										"eu"
+									],
+									"path": [
+										"api",
+										"workflows",
+										"2d08a73dd8ff99e9",
+										"invocations"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Encoding",
+									"value": "gzip"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Date",
+									"value": "Fri, 16 May 2025 11:36:38 GMT"
+								},
+								{
+									"key": "Server",
+									"value": "nginx/1.14.1"
+								},
+								{
+									"key": "Vary",
+									"value": "Accept-Encoding"
+								},
+								{
+									"key": "X-Clacks-Overhead",
+									"value": "GNU James Taylor (@jxtx) Simon Gladman (@slugger70) Jim Johnson (@jj-umn)"
+								},
+								{
+									"key": "X-Request-Id",
+									"value": "b64cc21816234e32b553e5a58353e10c"
+								},
+								{
+									"key": "Transfer-Encoding",
+									"value": "chunked"
+								}
+							],
+							"cookie": [],
+							"body": "[\n    {\n        \"model_class\": \"WorkflowInvocation\",\n        \"id\": \"5fa7f8106042ffb9\",\n        \"create_time\": \"2025-05-16T11:36:38.063171\",\n        \"update_time\": \"2025-05-16T11:36:38.063173\",\n        \"workflow_id\": \"11771509180b107c\",\n        \"history_id\": \"cbc8d9f78aef06cd\",\n        \"uuid\": \"07504842-324a-11f0-865e-001e67d2ec02\",\n        \"state\": \"new\"\n    }\n]"
+						}
+					]
+				},
+				{
+					"name": "Invoke SE Workflow with dataset",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "x-api-key",
+								"value": "1e8529a6b6d44751cc679081869cc480",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"replacement_dict\": {},\n    \"inputs\": {\n        \"0\": {\n            \"batch\": false,\n            \"product\": false,\n            \"values\": [\n                {\n                    \"id\": \"3e6fb6399b460cfb\",\n                    \"src\": \"hdca\",\n                    \"map_over_type\": null\n                }\n            ]\n        },\n        \"1\": null,\n        \"2\": false,\n        \"3\": \"apiMel3\",\n        \"4\": {\n            \"batch\": false,\n            \"product\": false,\n            \"values\": [\n                {\n                    \"id\": \"4838ba20a6d8676517a6a029b53330a0\",\n                    \"src\": \"hda\",\n                    \"map_over_type\": null\n                }\n            ]\n        },\n        \"5\": \"stranded - forward\",\n        \"6\": false,\n        \"7\": false,\n        \"8\": null,\n        \"9\": false\n    },\n    \"inputs_by\": \"step_index\",\n    \"batch\": true,\n    \"use_cached_job\": false,\n    \"require_exact_tool_versions\": false,\n    \"version\": 1,\n    \"history_id\": \"1748fbc00d2283c5\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://usegalaxy.eu/api/workflows/87fea062a9646a31/invocations",
+							"protocol": "https",
+							"host": [
+								"usegalaxy",
+								"eu"
+							],
+							"path": [
+								"api",
+								"workflows",
+								"87fea062a9646a31",
+								"invocations"
+							],
+							"query": [
+								{
+									"key": "",
+									"value": null,
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Workflow Job Summary Invocation status",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "x-api-key",
+								"value": "1e8529a6b6d44751cc679081869cc480",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "https://usegalaxy.eu/api/invocations/3fb96bce0f30b516/jobs_summary",
+							"protocol": "https",
+							"host": [
+								"usegalaxy",
+								"eu"
+							],
+							"path": [
+								"api",
+								"invocations",
+								"3fb96bce0f30b516",
+								"jobs_summary"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Workflow Steps Invocation status",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "x-api-key",
+								"value": "1e8529a6b6d44751cc679081869cc480",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "https://usegalaxy.eu/api/invocations/f5dd945649681d6d",
+							"protocol": "https",
+							"host": [
+								"usegalaxy",
+								"eu"
+							],
+							"path": [
+								"api",
+								"invocations",
+								"f5dd945649681d6d"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Workflow invocations",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "x-api-key",
+								"value": "1e8529a6b6d44751cc679081869cc480",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "https://usegalaxy.eu/api/invocations?limit=20&offset=0&sort_by=create_time&sort_desc=true&include_nested_invocations=false\\",
+							"protocol": "https",
+							"host": [
+								"usegalaxy",
+								"eu"
+							],
+							"path": [
+								"api",
+								"invocations"
+							],
+							"query": [
+								{
+									"key": "limit",
+									"value": "20"
+								},
+								{
+									"key": "offset",
+									"value": "0"
+								},
+								{
+									"key": "sort_by",
+									"value": "create_time"
+								},
+								{
+									"key": "sort_desc",
+									"value": "true"
+								},
+								{
+									"key": "include_nested_invocations",
+									"value": "false\\"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Output",
+			"item": [
+				{
+					"name": "Dataset output description",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "x-api-key",
+								"value": "1e8529a6b6d44751cc679081869cc480",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "https://usegalaxy.eu/api/datasets/4838ba20a6d86765d85249738fae6004?view=detailed",
+							"protocol": "https",
+							"host": [
+								"usegalaxy",
+								"eu"
+							],
+							"path": [
+								"api",
+								"datasets",
+								"4838ba20a6d86765d85249738fae6004"
+							],
+							"query": [
+								{
+									"key": "view",
+									"value": "detailed"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "History",
+			"item": [
+				{
+					"name": "Histories",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "x-api-key",
+								"value": "1e8529a6b6d44751cc679081869cc480",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "https://usegalaxy.eu/api/histories",
+							"protocol": "https",
+							"host": [
+								"usegalaxy",
+								"eu"
+							],
+							"path": [
+								"api",
+								"histories"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Rename history",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "x-api-key",
+								"value": "1e8529a6b6d44751cc679081869cc480",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"renamed_from_postman\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://usegalaxy.eu/api/histories/cbc8d9f78aef06cd",
+							"protocol": "https",
+							"host": [
+								"usegalaxy",
+								"eu"
+							],
+							"path": [
+								"api",
+								"histories",
+								"cbc8d9f78aef06cd"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "rename history response",
+							"originalRequest": {
+								"method": "PUT",
+								"header": [
+									{
+										"key": "x-api-key",
+										"value": "1e8529a6b6d44751cc679081869cc480",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"name\": \"renamed_from_postman\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "https://usegalaxy.eu/api/histories/cbc8d9f78aef06cd",
+									"protocol": "https",
+									"host": [
+										"usegalaxy",
+										"eu"
+									],
+									"path": [
+										"api",
+										"histories",
+										"cbc8d9f78aef06cd"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Encoding",
+									"value": "gzip"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Date",
+									"value": "Thu, 15 May 2025 14:31:10 GMT"
+								},
+								{
+									"key": "Server",
+									"value": "nginx/1.14.1"
+								},
+								{
+									"key": "Set-Cookie",
+									"value": "_f712e=9043d39dc35b28f6; Path=/"
+								},
+								{
+									"key": "Vary",
+									"value": "Accept-Encoding"
+								},
+								{
+									"key": "X-Clacks-Overhead",
+									"value": "GNU James Taylor (@jxtx) Simon Gladman (@slugger70) Jim Johnson (@jj-umn)"
+								},
+								{
+									"key": "X-Request-Id",
+									"value": "1a54791c95ca4888af07fbb59e0e4a36"
+								},
+								{
+									"key": "Transfer-Encoding",
+									"value": "chunked"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"model_class\": \"History\",\n    \"id\": \"cbc8d9f78aef06cd\",\n    \"name\": \"renamed_from_postman\",\n    \"deleted\": false,\n    \"purged\": false,\n    \"archived\": false,\n    \"url\": \"/api/histories/cbc8d9f78aef06cd\",\n    \"published\": false,\n    \"count\": 0,\n    \"annotation\": null,\n    \"tags\": [],\n    \"update_time\": \"2025-05-15T14:31:10.003883\",\n    \"preferred_object_store_id\": null,\n    \"contents_url\": \"/api/histories/cbc8d9f78aef06cd/contents\",\n    \"size\": 0,\n    \"user_id\": \"d9abf27a63f38d40\",\n    \"create_time\": \"2025-05-15T14:16:27.486336\",\n    \"importable\": false,\n    \"slug\": null,\n    \"username\": \"dev.researchspace\",\n    \"username_and_slug\": null,\n    \"genome_build\": \"?\",\n    \"state\": \"new\",\n    \"state_ids\": {\n        \"new\": [],\n        \"upload\": [],\n        \"queued\": [],\n        \"running\": [],\n        \"ok\": [],\n        \"empty\": [],\n        \"error\": [],\n        \"paused\": [],\n        \"setting_metadata\": [],\n        \"failed_metadata\": [],\n        \"deferred\": [],\n        \"discarded\": []\n    },\n    \"state_details\": {\n        \"new\": 0,\n        \"upload\": 0,\n        \"queued\": 0,\n        \"running\": 0,\n        \"ok\": 0,\n        \"empty\": 0,\n        \"error\": 0,\n        \"paused\": 0,\n        \"setting_metadata\": 0,\n        \"failed_metadata\": 0,\n        \"deferred\": 0,\n        \"discarded\": 0\n    }\n}"
+						}
+					]
+				},
+				{
+					"name": "Create new History",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "x-api-key",
+								"value": "1e8529a6b6d44751cc679081869cc480",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "https://usegalaxy.eu/api/histories",
+							"protocol": "https",
+							"host": [
+								"usegalaxy",
+								"eu"
+							],
+							"path": [
+								"api",
+								"histories"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "new history response",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "x-api-key",
+										"value": "1e8529a6b6d44751cc679081869cc480",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "https://usegalaxy.eu/history/create_new_current",
+									"protocol": "https",
+									"host": [
+										"usegalaxy",
+										"eu"
+									],
+									"path": [
+										"history",
+										"create_new_current"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Encoding",
+									"value": "gzip"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=UTF-8"
+								},
+								{
+									"key": "Date",
+									"value": "Thu, 15 May 2025 14:19:25 GMT"
+								},
+								{
+									"key": "Server",
+									"value": "nginx/1.14.1"
+								},
+								{
+									"key": "Set-Cookie",
+									"value": "galaxysession=11ac94870d0bb33a81ce4d371b57ef0e31988c9753edab8c93378590416082d1a34bed73a19d1ca8; expires=Wed, 13-Aug-2025 16:19:25 GMT; HttpOnly; Max-Age=7776000; Path=/; Secure; Version=1"
+								},
+								{
+									"key": "Set-Cookie",
+									"value": "galaxytoolrunnersession=11ac94870d0bb33ae32355353d00459797e2b714719acdb3fb23653f432c051f90207943feefe4b66787d81d9ce9762dd2c0671fc1e2fb1154c8610759d3bd71655c880c59d6555563ae36177e5e838db481321ec93d804f; expires=Wed, 13-Aug-2025 16:19:25 GMT; HttpOnly; Max-Age=7776000; Path=/tool_runner; SameSite=None; Secure; Version=1"
+								},
+								{
+									"key": "Vary",
+									"value": "Accept-Encoding"
+								},
+								{
+									"key": "X-Clacks-Overhead",
+									"value": "GNU James Taylor (@jxtx) Simon Gladman (@slugger70) Jim Johnson (@jj-umn)"
+								},
+								{
+									"key": "X-Request-Id",
+									"value": "46d4252c689d49abaeedee69b6a02ac9"
+								},
+								{
+									"key": "Transfer-Encoding",
+									"value": "chunked"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"name\": \"Unnamed history\",\n    \"create_time\": \"2025-05-15T14:19:25.193466\",\n    \"importable\": false,\n    \"url\": \"history?history_id=6d80ae715d60193e\",\n    \"annotation\": null,\n    \"user_id\": null,\n    \"id\": \"6d80ae715d60193e\",\n    \"contents_url\": \"history_contents?history_id=6d80ae715d60193e\",\n    \"update_time\": \"2025-05-15T14:19:25.189664\",\n    \"username_and_slug\": null,\n    \"count\": 0,\n    \"hid_counter\": 1,\n    \"genome_build\": \"?\",\n    \"purged\": false,\n    \"model_class\": \"History\",\n    \"published\": false,\n    \"archived\": false,\n    \"size\": 0,\n    \"tags\": [],\n    \"preferred_object_store_id\": null,\n    \"deleted\": false,\n    \"slug\": null,\n    \"contents_active\": {\n        \"deleted\": 0,\n        \"hidden\": 0,\n        \"active\": 0\n    }\n}"
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "Whoami",
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {}
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "text",
+						"disabled": true
+					},
+					{
+						"key": "x-api-key",
+						"value": "1e8529a6b6d44751cc679081869cc480",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "https://usegalaxy.eu/api/whoami",
+					"protocol": "https",
+					"host": [
+						"usegalaxy",
+						"eu"
+					],
+					"path": [
+						"api",
+						"whoami"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

@@ -1,0 +1,39 @@
+{
+  "inputs": {
+    "0": {
+      "batch": false,
+      "product": false,
+      "values": [
+        {
+          "id": "3e6fb6399b460cfb",
+          "src": "hdca",
+          "map_over_type": null
+        }
+      ]
+    },
+    "1": null,
+    "2": false,
+    "3": "apiMel3",
+    "4": {
+      "batch": false,
+      "product": false,
+      "values": [
+        {
+          "id": "4838ba20a6d8676517a6a029b53330a0",
+          "src": "hda",
+          "map_over_type": null
+        }
+      ]
+    },
+    "5": "stranded - forward",
+    "6": false,
+    "7": false,
+    "8": null,
+    "9": false
+  },
+  "inputs_by": "step_index",
+  "batch": true,
+  "use_cached_job": false,
+  "require_exact_tool_versions": false,
+  "history_id": "1748fbc00d2283c5"
+}
