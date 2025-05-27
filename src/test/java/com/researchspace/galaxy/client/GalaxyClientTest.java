@@ -1,6 +1,7 @@
 package com.researchspace.galaxy.client;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.researchspace.galaxy.model.output.history.History;
 import com.researchspace.galaxy.model.output.upload.UploadFileResponse;
 import io.tus.java.client.TusClient;
 import io.tus.java.client.TusUpload;
@@ -12,6 +13,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.test.web.client.MockRestServiceServer;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
 import java.io.File;
@@ -21,6 +24,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
+import static org.springframework.test.web.client.match.MockRestRequestMatchers.content;
 import static org.springframework.test.web.client.match.MockRestRequestMatchers.header;
 import static org.springframework.test.web.client.match.MockRestRequestMatchers.jsonPath;
 import static org.springframework.test.web.client.match.MockRestRequestMatchers.method;
@@ -30,26 +34,26 @@ import static org.springframework.test.web.client.response.MockRestResponseCreat
 public class GalaxyClientTest {
 
     public static final String TEST_FILE_TXT = "other_21May_sample_fasta.txt";
-    private GalaxyClientImpl galaxyClient;
+    private GalaxyClient galaxyClient;
     private MockRestServiceServer mockServer;
     private RestTemplate restTemplate;
     private ObjectMapper objectMapper = new ObjectMapper();
 
     @Mock
     private TusUploadHandler mockTusUploadHandler;
-    private File fileToUpload= new File("src/test/resources/files/other_21May_sample_fasta.txt");
+    private File fileToUpload = new File("src/test/resources/files/other_21May_sample_fasta.txt");
 
     @BeforeEach
     public void setUp() throws Exception {
         initMocks(this);
         restTemplate = new RestTemplate();
         mockServer = MockRestServiceServer.createServer(restTemplate);
-
+        galaxyClient = new GalaxyClientImpl();
         // uploadFile has two parts, the first uses TusUploadHandler to do the actual transfer of
         //file data and the final part uses RestTemplate
-        galaxyClient = new GalaxyClientImpl();
         ReflectionTestUtils.setField(galaxyClient, "restTemplate", restTemplate);
         ReflectionTestUtils.setField(galaxyClient, "tusUploadHandler", mockTusUploadHandler);
+        ReflectionTestUtils.setField(galaxyClient, "galaxyUrl", "https://usegalaxy.eu/");
     }
 
     @Test
@@ -61,11 +65,10 @@ public class GalaxyClientTest {
         UploadFileResponse expectedResponse = new UploadFileResponse();
 
         when
-                (mockTusUploadHandler.uploadFile(any(TusClient.class),any(TusUpload.class),
-                eq("https://usegalaxy.eu/api/upload/resumable_upload"),
-                eq(apiKey))).thenReturn(uploadSessionId);
+                (mockTusUploadHandler.uploadFile(any(TusClient.class), any(TusUpload.class),
+                        eq("https://usegalaxy.eu/api/upload/resumable_upload"),
+                        eq(apiKey))).thenReturn(uploadSessionId);
 
-        // Mock fetch endpoint
         mockServer.expect(requestTo("https://usegalaxy.eu/api/tools/fetch"))
                 .andExpect(method(HttpMethod.POST))
                 .andExpect(header("x-api-key", apiKey))
@@ -78,5 +81,26 @@ public class GalaxyClientTest {
 
         UploadFileResponse result = galaxyClient.uploadFile(historyId, apiKey, fileToUpload);
         assertNotNull(result);
+    }
+
+    private MultiValueMap<String, String> getFormData(String key, String value) {
+        MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
+        map.add(key, value);
+        return map;
+    }
+
+    @Test
+    public void createHistoryShouldSucceed() throws Exception {
+        String apiKey = "key123";
+        History expectedResponse = new History();
+        mockServer.expect(requestTo("https://usegalaxy.eu/api/histories"))
+                .andExpect(method(HttpMethod.POST))
+                .andExpect(header("x-api-key", apiKey))
+                .andExpect(content().formData(getFormData("name", "history123")))
+                .andRespond(withStatus(HttpStatus.OK)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .body(objectMapper.writeValueAsString(expectedResponse)));
+        History response = galaxyClient.createNewHistory("key123", "history123");
+        assertNotNull(response);
     }
 }
