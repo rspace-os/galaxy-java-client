@@ -6,10 +6,11 @@ import com.researchspace.galaxy.model.output.upload.UploadFileResponse;
 import com.researchspace.galaxy.model.output.workflow.WorkflowInvocationResponse;
 import com.researchspace.galaxy.model.output.workflow.WorkflowInvocationStepStatusResponse;
 import com.researchspace.galaxy.model.output.workflow.WorkflowInvocationSummaryStatusResponse;
-import java.io.File;
-import java.io.IOException;
 import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.ResourceAccessException;
+
+import java.io.File;
+import java.io.IOException;
 
 /*
  * This interface declares the operations that this library supports with
@@ -49,7 +50,7 @@ public interface GalaxyClient {
    * @return the UploadFileOutput object describing the uploaded file
    * @throws HttpServerErrorException
    */
-  UploadFileResponse uploadFile(String apiKey, File fieToUpload) throws HttpServerErrorException;
+  UploadFileResponse uploadFile(String historyID, String apiKey, File fieToUpload) throws HttpServerErrorException;
 
 
   HistoryDatasetCollectionAssociation createDatasetCollectionOfPairs(String apiKey,
