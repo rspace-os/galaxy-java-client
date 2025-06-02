@@ -1,8 +1,15 @@
 package com.researchspace.galaxy.client;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.researchspace.galaxy.model.input.workflow.SingleReadRNAFastQsWorkflowInvocationRequest;
+import com.researchspace.galaxy.model.input.workflow.WorkflowInvocationRequest;
 import com.researchspace.galaxy.model.output.history.History;
+import com.researchspace.galaxy.model.output.upload.HistoryDatasetCollectionAssociation;
 import com.researchspace.galaxy.model.output.upload.UploadFileResponse;
+import com.researchspace.galaxy.model.output.workflow.WorkflowInvocationResponse;
+import com.researchspace.galaxy.model.output.workflow.WorkflowInvocationStepStatusResponse;
+import com.researchspace.galaxy.model.output.workflow.WorkflowInvocationSummaryStatusResponse;
 import io.tus.java.client.TusClient;
 import io.tus.java.client.TusUpload;
 import org.junit.jupiter.api.BeforeEach;
@@ -18,8 +25,10 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
 import java.io.File;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
@@ -101,6 +110,129 @@ public class GalaxyClientTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .body(objectMapper.writeValueAsString(expectedResponse)));
         History response = galaxyClient.createNewHistory("key123", "history123");
+        assertNotNull(response);
+    }
+
+    @Test
+    public void testCreateDataSetCollectiionShouldSucceed() throws Exception {
+        String apiKey = "key123";
+        HistoryDatasetCollectionAssociation expectedResponse = new HistoryDatasetCollectionAssociation();
+        mockServer.expect(requestTo("https://usegalaxy.eu/api/dataset_collections"))
+                .andExpect(method(HttpMethod.POST))
+                .andExpect(header("x-api-key", apiKey))
+                .andExpect(jsonPath("$.history_id").value("history123"))
+                .andExpect(jsonPath("$.name").value("newCollectionName"))
+                .andExpect(jsonPath("$.instance_type").value("history"))
+                .andExpect(jsonPath("$.type").value("dataset_collection"))
+                .andExpect(jsonPath("$.collection_type").value("list"))
+                .andExpect(jsonPath("$.element_identifiers[0].name").value("datafileName"))
+                .andExpect(jsonPath("$.element_identifiers[0].id").value("dataFileID"))
+                .andExpect(jsonPath("$.element_identifiers[0].src").value("hda"))
+                .andRespond(withStatus(HttpStatus.OK)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .body(objectMapper.writeValueAsString(expectedResponse)));
+        HistoryDatasetCollectionAssociation response = galaxyClient.createDatasetCollection("key123", "history123", "newCollectionName","datafileName","dataFileID");
+        assertNotNull(response);
+    }
+    @Test
+    public void testCreateDataSetCollectiionPairShouldSucceed() throws Exception {
+        String apiKey = "key123";
+        HistoryDatasetCollectionAssociation expectedResponse = new HistoryDatasetCollectionAssociation();
+        mockServer.expect(requestTo("https://usegalaxy.eu/api/dataset_collections"))
+                .andExpect(method(HttpMethod.POST))
+                .andExpect(header("x-api-key", apiKey))
+                .andExpect(jsonPath("$.history_id").value("history123"))
+                .andExpect(jsonPath("$.name").value("newCollectionPairName"))
+                .andExpect(jsonPath("$.instance_type").value("history"))
+                .andExpect(jsonPath("$.type").value("dataset_collection"))
+                .andExpect(jsonPath("$.collection_type").value("list:paired"))
+                .andExpect(jsonPath("$.element_identifiers[0].name").value("theNewPairName"))
+                .andExpect(jsonPath("$.element_identifiers[0].src").value("new_collection"))
+                .andExpect(jsonPath("$.element_identifiers[0].element_identifiers[0].name").value("forward"))
+                .andExpect(jsonPath("$.element_identifiers[0].element_identifiers[0].id").value("idForward"))
+                .andExpect(jsonPath("$.element_identifiers[0].element_identifiers[0].src").value("hda"))
+                .andExpect(jsonPath("$.element_identifiers[0].element_identifiers[1].name").value("reverse"))
+                .andExpect(jsonPath("$.element_identifiers[0].element_identifiers[1].id").value("idReverse"))
+                .andExpect(jsonPath("$.element_identifiers[0].element_identifiers[1].src").value("hda"))
+                .andRespond(withStatus(HttpStatus.OK)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .body(objectMapper.writeValueAsString(expectedResponse)));
+        HistoryDatasetCollectionAssociation response = galaxyClient.createDatasetCollectionOfPairs("key123", "history123", "newCollectionPairName","theNewPairName",
+                "idForward","idReverse");
+        assertNotNull(response);
+    }
+
+    @Test
+    public void testConnectionShouldSucceed() throws Exception {
+        String apiKey = "key123";
+        mockServer.expect(requestTo("https://usegalaxy.eu/api/upload/resumable_upload"))
+                .andExpect(method(HttpMethod.POST))
+                .andExpect(header("x-api-key", apiKey))
+                .andRespond(withStatus(HttpStatus.CREATED));
+        assertTrue(galaxyClient.testConnection("key123"));
+    }
+     @Test
+    public void invokeWorkFlowShouldSucceed() throws JsonProcessingException {
+         String apiKey = "key123";
+         String workflowId = "workflowId";
+         String historyId = "historyId";
+         String datasetId = "datasetId";
+         List<WorkflowInvocationResponse> expectedResponse = List.of(new WorkflowInvocationResponse());
+         WorkflowInvocationRequest request = new SingleReadRNAFastQsWorkflowInvocationRequest(historyId, datasetId);
+         mockServer.expect(requestTo("https://usegalaxy.eu/api/workflows/" + workflowId + "/invocations"))
+                 .andExpect(method(HttpMethod.POST))
+                 .andExpect(header("x-api-key", apiKey))
+                 .andExpect(jsonPath("$.history_id").value(historyId))
+                 .andExpect(jsonPath("$.inputs.0.values[0].id").value(datasetId))
+                 .andRespond(withStatus(HttpStatus.OK)
+                         .contentType(MediaType.APPLICATION_JSON)
+                         .body(objectMapper.writeValueAsString(expectedResponse)));
+         List<WorkflowInvocationResponse> response =  galaxyClient.invokeWorkflow("key123", request, workflowId);
+         assertNotNull(response.get(0));
+     }
+     
+     @Test
+     public void testGetTopLevelInvocationsInAHistoryShouldSucceed() throws Exception {
+         String apiKey = "key123";
+         String historyId = "history123";
+         List<WorkflowInvocationResponse> expectedResponse = List.of(new WorkflowInvocationResponse());
+         mockServer.expect(requestTo("https://usegalaxy.eu/api/invocations?include_nested_invocations=false&history_id=" + historyId))
+                 .andExpect(method(HttpMethod.GET))
+                 .andExpect(header("x-api-key", apiKey))
+                 .andRespond(withStatus(HttpStatus.OK)
+                         .contentType(MediaType.APPLICATION_JSON)
+                         .body(objectMapper.writeValueAsString(expectedResponse)));
+         List<WorkflowInvocationResponse> response = galaxyClient.getTopLevelInvocationsInAHistory(apiKey, historyId);
+         assertNotNull(response.get(0));
+     }
+
+    @Test
+    public void testGetWorkflowInvocationSummaryStatusShouldSucceed() throws Exception {
+        String apiKey = "key123";
+        String invocationId = "invocation123";
+        WorkflowInvocationSummaryStatusResponse expectedResponse = new WorkflowInvocationSummaryStatusResponse();
+        mockServer.expect(requestTo("https://usegalaxy.eu/api/invocations/" + invocationId + "/jobs_summary"))
+                .andExpect(method(HttpMethod.GET))
+                .andExpect(header("x-api-key", apiKey))
+                .andRespond(withStatus(HttpStatus.OK)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .body(objectMapper.writeValueAsString(expectedResponse)));
+        WorkflowInvocationSummaryStatusResponse response = galaxyClient.getWorkflowInvocatioSummaryStatus(apiKey, invocationId);
+        assertNotNull(response);
+    }
+
+    @Test
+    public void testGetWorkflowInvocationDataShouldSucceed() throws Exception {
+        String apiKey = "key123";
+        String invocationId = "invocation123";
+        WorkflowInvocationStepStatusResponse expectedResponse = new WorkflowInvocationStepStatusResponse();
+        mockServer.expect(requestTo("https://usegalaxy.eu/api/invocations/" + invocationId))
+                .andExpect(method(HttpMethod.GET))
+                .andExpect(header("x-api-key", apiKey))
+                .andRespond(withStatus(HttpStatus.OK)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .body(objectMapper.writeValueAsString(expectedResponse)));
+        WorkflowInvocationStepStatusResponse response = galaxyClient.getWorkflowInvocationData(apiKey,invocationId);
         assertNotNull(response);
     }
 }

@@ -1,6 +1,9 @@
 package com.researchspace.galaxy.client;
 
+import com.researchspace.galaxy.model.input.upload.CreateDatasetCollectionOfPairsRequest;
+import com.researchspace.galaxy.model.input.upload.CreateDatasetCollectionRequest;
 import com.researchspace.galaxy.model.input.upload.UploadFileRequest;
+import com.researchspace.galaxy.model.input.workflow.WorkflowInvocationRequest;
 import com.researchspace.galaxy.model.output.history.History;
 import com.researchspace.galaxy.model.output.upload.HistoryDatasetCollectionAssociation;
 import com.researchspace.galaxy.model.output.upload.UploadFileResponse;
@@ -12,10 +15,12 @@ import io.tus.java.client.TusUpload;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
@@ -24,13 +29,14 @@ import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.client.RestTemplate;
 
 import java.io.File;
-import java.io.IOException;
+import java.util.List;
+
 @Slf4j
 @Component
 public class GalaxyClientImpl implements GalaxyClient {
     @Value("${galaxy.api.url}")
     private String galaxyUrl;
-    private TusUploadHandler tusUploadHandler  = new TusUploadHandler();
+    private TusUploadHandler tusUploadHandler = new TusUploadHandler();
     private RestTemplate restTemplate = new RestTemplate();
 
 
@@ -41,7 +47,7 @@ public class GalaxyClientImpl implements GalaxyClient {
         headers.add("upload-length", "1000");
         return restTemplate
                 .exchange(
-                        galaxyUrl +"api/upload/resumable_upload",
+                        galaxyUrl + "api/upload/resumable_upload",
                         HttpMethod.POST,
                         new HttpEntity<>(null, headers),
                         Object.class).getStatusCode() == HttpStatus.CREATED;
@@ -52,9 +58,9 @@ public class GalaxyClientImpl implements GalaxyClient {
         HttpHeaders headers = new HttpHeaders();
         headers.add("x-api-key", apiKey);
         MultiValueMap<String, String> requestBody = new LinkedMultiValueMap<>();
-        requestBody.add("name",historyName);
+        requestBody.add("name", historyName);
         History response = restTemplate.exchange(
-                galaxyUrl +"api/histories",
+                galaxyUrl + "api/histories",
                 HttpMethod.POST,
                 new HttpEntity<>(requestBody, headers),
                 History.class).getBody();
@@ -64,13 +70,13 @@ public class GalaxyClientImpl implements GalaxyClient {
     @SneakyThrows
     @Override
     public UploadFileResponse uploadFile(String historyID, String apiKey, File fileToUpload) throws HttpServerErrorException {
-        String uploadSessionID =  tusUploadHandler.uploadFile(new TusClient(), new TusUpload(fileToUpload), galaxyUrl +"api/upload/resumable_upload", apiKey);
+        String uploadSessionID = tusUploadHandler.uploadFile(new TusClient(), new TusUpload(fileToUpload), galaxyUrl + "api/upload/resumable_upload", apiKey);
         HttpHeaders headers = new HttpHeaders();
         headers.add("x-api-key", apiKey);
-        UploadFileRequest uploadFileRequest = new UploadFileRequest(historyID,uploadSessionID, fileToUpload.getName());
+        UploadFileRequest uploadFileRequest = new UploadFileRequest(historyID, uploadSessionID, fileToUpload.getName());
         UploadFileResponse response = restTemplate
                 .exchange(
-                        galaxyUrl +"api/tools/fetch",
+                        galaxyUrl + "api/tools/fetch",
                         HttpMethod.POST,
                         new HttpEntity<>(uploadFileRequest, headers),
                         UploadFileResponse.class).getBody();
@@ -79,27 +85,83 @@ public class GalaxyClientImpl implements GalaxyClient {
     }
 
     @Override
-    public HistoryDatasetCollectionAssociation createDatasetCollectionOfPairs(String apiKey, String historyId, String nameListOfPair, String collectionName, String datasetIdForward, String DataserIdReverse) throws HttpServerErrorException {
-        return null;
+    public HistoryDatasetCollectionAssociation createDatasetCollectionOfPairs(String apiKey, String historyId, String collectionNameOfListOfPair, String pairName,
+            String datasetIdForward, String datasetIdReverse) throws HttpServerErrorException {
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("x-api-key", apiKey);
+        CreateDatasetCollectionOfPairsRequest createDatasetCollectionOfPairsRequest = new CreateDatasetCollectionOfPairsRequest(collectionNameOfListOfPair, pairName,
+                datasetIdForward, datasetIdReverse, historyId);
+        HistoryDatasetCollectionAssociation response = restTemplate.exchange(
+                galaxyUrl + "api/dataset_collections",
+                HttpMethod.POST,
+                new HttpEntity<>(createDatasetCollectionOfPairsRequest, headers),
+                HistoryDatasetCollectionAssociation.class).getBody();
+        return response;
     }
 
     @Override
-    public WorkflowInvocationResponse invokeWorkflow(String apiKey, String historyId, String workflowId, String datasetId) throws HttpServerErrorException {
-        return null;
+    public HistoryDatasetCollectionAssociation createDatasetCollection(String apiKey, String historyId, String collectionName, String dataFileName, String dataId) throws HttpServerErrorException {
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("x-api-key", apiKey);
+        CreateDatasetCollectionRequest createDatasetCollectionRequest = new CreateDatasetCollectionRequest(collectionName, dataFileName, dataId, historyId);
+        HistoryDatasetCollectionAssociation response = restTemplate.exchange(
+                galaxyUrl + "api/dataset_collections",
+                HttpMethod.POST,
+                new HttpEntity<>(createDatasetCollectionRequest, headers),
+                HistoryDatasetCollectionAssociation.class).getBody();
+        return response;
     }
 
     @Override
-    public WorkflowInvocationSummaryStatusResponse getWorkflowInvocationOverallStatus(String apiKey, String invocationId) throws HttpServerErrorException {
-        return null;
+    public List<WorkflowInvocationResponse> invokeWorkflow(String apiKey, WorkflowInvocationRequest request, String workflowId) throws HttpServerErrorException {
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("x-api-key", apiKey);
+        List<WorkflowInvocationResponse> response = restTemplate.exchange(
+                galaxyUrl + "api/workflows/" + workflowId + "/invocations",
+                HttpMethod.POST,
+                new HttpEntity<>(request, headers),
+                new ParameterizedTypeReference<List<WorkflowInvocationResponse>>() {
+                }).getBody();
+        return response;
     }
 
     @Override
-    public WorkflowInvocationStepStatusResponse getWorkflowStepsInvocationStatus(String apiKey, String invocationId) throws HttpServerErrorException {
-        return null;
+    @SuppressWarnings("unchecked")
+    public List<WorkflowInvocationResponse> getTopLevelInvocationsInAHistory(String apiKey, String historyId) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("x-api-key", apiKey);
+        ResponseEntity<List<WorkflowInvocationResponse>> response = restTemplate.exchange(
+                galaxyUrl + "api/invocations?include_nested_invocations=false&history_id=" + historyId,
+                HttpMethod.GET,
+                new HttpEntity<>(null, headers),
+                new ParameterizedTypeReference<List<WorkflowInvocationResponse>>() {
+                });
+        return response.getBody();
     }
 
     @Override
-    public String getHistoryLink(String apiKey, String invocationId) throws HttpServerErrorException, IOException {
-        return "";
+    public WorkflowInvocationSummaryStatusResponse getWorkflowInvocatioSummaryStatus(String apiKey, String invocationId) throws HttpServerErrorException {
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("x-api-key", apiKey);
+        WorkflowInvocationSummaryStatusResponse response = restTemplate.exchange(
+                galaxyUrl + "api/invocations/" + invocationId + "/jobs_summary",
+                HttpMethod.GET,
+                new HttpEntity<>(null, headers),
+                WorkflowInvocationSummaryStatusResponse.class).getBody();
+        return response;
+    }
+
+    @Override
+        public WorkflowInvocationStepStatusResponse getWorkflowInvocationData(String apiKey, String invocationId){
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("x-api-key", apiKey);
+        WorkflowInvocationStepStatusResponse response = restTemplate.exchange(
+                galaxyUrl + "api/invocations/" + invocationId,
+                HttpMethod.GET,
+                new HttpEntity<>(null, headers),
+                WorkflowInvocationStepStatusResponse.class).getBody();
+        return response;
     }
 }
+
+

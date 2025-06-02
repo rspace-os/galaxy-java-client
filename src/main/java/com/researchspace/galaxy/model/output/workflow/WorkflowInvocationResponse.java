@@ -35,8 +35,9 @@ public class WorkflowInvocationResponse {
 
   @JsonProperty("history_id")
   private String historyId;
-
+  @JsonProperty("uuid")
   private String uuid;
+  @JsonProperty("state")
   private String state;
 
 }
