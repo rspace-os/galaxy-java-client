@@ -1,32 +1,5 @@
 package com.researchspace.galaxy.client;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.researchspace.galaxy.model.input.workflow.SingleReadRNAFastQsWorkflowInvocationRequest;
-import com.researchspace.galaxy.model.input.workflow.WorkflowInvocationRequest;
-import com.researchspace.galaxy.model.output.history.History;
-import com.researchspace.galaxy.model.output.upload.HistoryDatasetCollectionAssociation;
-import com.researchspace.galaxy.model.output.upload.UploadFileResponse;
-import com.researchspace.galaxy.model.output.workflow.WorkflowInvocationResponse;
-import com.researchspace.galaxy.model.output.workflow.WorkflowInvocationStepStatusResponse;
-import com.researchspace.galaxy.model.output.workflow.WorkflowInvocationSummaryStatusResponse;
-import io.tus.java.client.TusClient;
-import io.tus.java.client.TusUpload;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.test.util.ReflectionTestUtils;
-import org.springframework.test.web.client.MockRestServiceServer;
-import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.util.MultiValueMap;
-import org.springframework.web.client.RestTemplate;
-
-import java.io.File;
-import java.util.List;
-
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
@@ -39,6 +12,32 @@ import static org.springframework.test.web.client.match.MockRestRequestMatchers.
 import static org.springframework.test.web.client.match.MockRestRequestMatchers.method;
 import static org.springframework.test.web.client.match.MockRestRequestMatchers.requestTo;
 import static org.springframework.test.web.client.response.MockRestResponseCreators.withStatus;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.researchspace.galaxy.model.input.workflow.SingleReadRNAFastQsWorkflowInvocationRequest;
+import com.researchspace.galaxy.model.input.workflow.WorkflowInvocationRequest;
+import com.researchspace.galaxy.model.output.history.History;
+import com.researchspace.galaxy.model.output.upload.HistoryDatasetCollectionAssociation;
+import com.researchspace.galaxy.model.output.upload.UploadFileResponse;
+import com.researchspace.galaxy.model.output.workflow.WorkflowInvocationResponse;
+import com.researchspace.galaxy.model.output.workflow.WorkflowInvocationStepStatusResponse;
+import com.researchspace.galaxy.model.output.workflow.WorkflowInvocationSummaryStatusResponse;
+import io.tus.java.client.TusClient;
+import io.tus.java.client.TusUpload;
+import java.io.File;
+import java.util.List;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.mockito.Mock;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.test.util.ReflectionTestUtils;
+import org.springframework.test.web.client.MockRestServiceServer;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
+import org.springframework.web.client.RestTemplate;
 
 public class GalaxyClientTest {
 
@@ -62,7 +61,7 @@ public class GalaxyClientTest {
         //file data and the final part uses RestTemplate
         ReflectionTestUtils.setField(galaxyClient, "restTemplate", restTemplate);
         ReflectionTestUtils.setField(galaxyClient, "tusUploadHandler", mockTusUploadHandler);
-        ReflectionTestUtils.setField(galaxyClient, "galaxyUrl", "https://usegalaxy.eu/");
+        ReflectionTestUtils.setField(galaxyClient, "galaxyApiUrl", "https://usegalaxy.eu/api");
     }
 
     @Test

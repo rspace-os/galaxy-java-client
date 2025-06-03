@@ -1,5 +1,9 @@
 package com.researchspace.galaxy.client;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.researchspace.galaxy.model.input.workflow.PairedEndRNAFastQsWorkflowInvocationRequest;
@@ -12,17 +16,12 @@ import com.researchspace.galaxy.model.output.workflow.WorkflowInvocationResponse
 import com.researchspace.galaxy.model.output.workflow.WorkflowInvocationStepStatusResponse;
 import com.researchspace.galaxy.model.output.workflow.WorkflowInvocationSummaryStatusResponse;
 import com.researchspace.galaxy.properties.TestProperties;
+import java.io.File;
+import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
 import org.springframework.test.util.ReflectionTestUtils;
-
-import java.io.File;
-import java.util.List;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * Runs if two System properties are correct: "nightly" is set to "true" and GALAXY_API_KEY is set with a valid value for the Galaxy instance.
@@ -49,7 +48,7 @@ public class GalaxyClientRealConnectionTest {
     @BeforeEach
     public void setUp() {
         client = new GalaxyClientImpl();
-        ReflectionTestUtils.setField(client, "galaxyUrl", "https://usegalaxy.eu/");
+        ReflectionTestUtils.setField(client, "galaxyApiUrl", "https://usegalaxy.eu/api");
         fileToUpload = new File(FILE_TO_UPLOAD_PATH);
         reversePairFileToUpload = new File(FILE_TO_UPLOAD_REVERSE_PAIR_PATH);
     }
