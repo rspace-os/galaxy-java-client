@@ -87,12 +87,6 @@
       <groupId>io.tus.java.client</groupId>
       <artifactId>tus-java-client</artifactId>
       <version>0.5.1</version>
-      <exclusions>
-        <exclusion>
-          <groupId>org.jetbrains</groupId>
-          <artifactId>annotations:jar</artifactId>
-        </exclusion>
-      </exclusions>
     </dependency>
     <dependency>
       <groupId>com.fasterxml.jackson.core</groupId>
