@@ -41,6 +41,7 @@ public class GalaxyClientRealConnectionTest {
     private static  final String TEST_EXISTING_PAIRED_RNA_DATASET_ID = TestProperties.getProperty("testExistingPairedRnaDatasetId");
     private static  final String TEST_EXISTING_SINGLE_RNA_DATASET_ID = TestProperties.getProperty("testExistingSingleRnaDatasetId");
     private static  final String TEST_EXISTING_INVOCATION_ID = TestProperties.getProperty("testExistingInvocationId");
+    private static final String GALAXY_URL = TestProperties.getProperty("galaxyUrl");
     private ObjectMapper objectMapper = new ObjectMapper();
     private GalaxyClient client;
     private File fileToUpload;
@@ -48,7 +49,7 @@ public class GalaxyClientRealConnectionTest {
     @BeforeEach
     public void setUp() {
         client = new GalaxyClientImpl();
-        ReflectionTestUtils.setField(client, "galaxyApiUrl", "https://usegalaxy.eu/api");
+        ReflectionTestUtils.setField(client, "galaxyApiUrl", GALAXY_URL);
         fileToUpload = new File(FILE_TO_UPLOAD_PATH);
         reversePairFileToUpload = new File(FILE_TO_UPLOAD_REVERSE_PAIR_PATH);
     }
