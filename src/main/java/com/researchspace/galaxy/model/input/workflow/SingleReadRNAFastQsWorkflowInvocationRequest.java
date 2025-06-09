@@ -15,7 +15,7 @@ import lombok.Getter;
 public class SingleReadRNAFastQsWorkflowInvocationRequest extends WorkflowInvocationRequest {
 
   @JsonIgnore
-  private final String forWorkFlowWithId = "87fea062a9646a31";
+  public static final String forWorkFlowWithId = "87fea062a9646a31";
 
   private final SEInputs inputs;
 
