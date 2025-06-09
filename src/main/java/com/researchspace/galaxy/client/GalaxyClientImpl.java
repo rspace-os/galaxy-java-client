@@ -12,6 +12,7 @@ import com.researchspace.galaxy.model.output.workflow.WorkflowInvocationStepStat
 import com.researchspace.galaxy.model.output.workflow.WorkflowInvocationSummaryStatusResponse;
 import io.tus.java.client.TusClient;
 import io.tus.java.client.TusUpload;
+import java.util.Map;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -34,6 +35,7 @@ import java.util.List;
 @Slf4j
 @Component
 public class GalaxyClientImpl implements GalaxyClient {
+    public static final int REQUEST_SIZE_LIMIT = 100;
     @Value("${galaxy.api.url}")
     private String galaxyApiUrl;
     private TusUploadHandler tusUploadHandler = new TusUploadHandler();
@@ -101,10 +103,11 @@ public class GalaxyClientImpl implements GalaxyClient {
     }
 
     @Override
-    public HistoryDatasetCollectionAssociation createDatasetCollection(String apiKey, String historyId, String collectionName, String dataFileName, String dataId) throws HttpServerErrorException {
+    public HistoryDatasetCollectionAssociation createDatasetCollection(String apiKey,
+        String historyId, String collectionName, Map<String, String> dataFileNamesToIds) throws HttpServerErrorException {
         HttpHeaders headers = new HttpHeaders();
         headers.add("x-api-key", apiKey);
-        CreateDatasetCollectionRequest createDatasetCollectionRequest = new CreateDatasetCollectionRequest(collectionName, dataFileName, dataId, historyId);
+        CreateDatasetCollectionRequest createDatasetCollectionRequest = new CreateDatasetCollectionRequest(collectionName, dataFileNamesToIds, historyId);
         HistoryDatasetCollectionAssociation response = restTemplate.exchange(
                 galaxyApiUrl + "/dataset_collections",
                 HttpMethod.POST,
@@ -131,13 +134,22 @@ public class GalaxyClientImpl implements GalaxyClient {
     public List<WorkflowInvocationResponse> getTopLevelInvocationsInAHistory(String apiKey, String historyId) {
         HttpHeaders headers = new HttpHeaders();
         headers.add("x-api-key", apiKey);
-        ResponseEntity<List<WorkflowInvocationResponse>> response = restTemplate.exchange(
-                galaxyApiUrl + "/invocations?include_nested_invocations=false&history_id=" + historyId,
+        List<WorkflowInvocationResponse> allResults = new java.util.ArrayList<>();
+        ResponseEntity<List<WorkflowInvocationResponse>> response = null;
+        for(int offset=0;offset<Integer.MAX_VALUE;offset+=REQUEST_SIZE_LIMIT) {
+            response = restTemplate.exchange(
+                galaxyApiUrl + "/invocations?include_nested_invocations=false&history_id="
+                    + historyId + "&limit=" + REQUEST_SIZE_LIMIT+"&offset="+offset,
                 HttpMethod.GET,
                 new HttpEntity<>(null, headers),
                 new ParameterizedTypeReference<List<WorkflowInvocationResponse>>() {
                 });
-        return response.getBody();
+            allResults.addAll(response.getBody());
+            if(response.getBody().isEmpty() || response.getBody().size()<REQUEST_SIZE_LIMIT){
+                break;
+            }
+        }
+        return allResults;
     }
 
     @Override

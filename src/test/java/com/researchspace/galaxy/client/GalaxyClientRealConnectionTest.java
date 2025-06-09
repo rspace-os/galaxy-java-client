@@ -18,6 +18,7 @@ import com.researchspace.galaxy.model.output.workflow.WorkflowInvocationSummaryS
 import com.researchspace.galaxy.properties.TestProperties;
 import java.io.File;
 import java.util.List;
+import java.util.Map;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
@@ -30,6 +31,7 @@ public class GalaxyClientRealConnectionTest {
     public static final String GALAXY_API_KEY = System.getProperty("GALAXY_API_KEY");
     public static final String TEST_CREATE_NEW_HISTORY = "testCreateNewHistory";
     public static final String TEST_CREATE_NEW_SINGLE_DATASET = "testCreateNewSingleDataset";
+    public static final String TEST_CREATE_NEW_SINGLE_DATASET_TWO_ITEMS = "testCreateNewSingleDatasetTwoItems";
     public static final String FILE_TO_UPLOAD_PATH="src/test/resources/files/other_21May_sample_fasta.txt";
     public static final String FILE_TO_UPLOAD_REVERSE_PAIR_PATH="src/test/resources/files/sample_fasta_data.txt";
     private static final String TEST_CREATE_NEW_PAIRED_LIST_DATASET = "testCreateNewPairedListDataset";
@@ -101,11 +103,20 @@ public class GalaxyClientRealConnectionTest {
 
     @EnabledIfSystemProperty(named = "nightly", matches = "true")
     @Test
-    public void testCreateDatasetCollection() {
+    public void testCreateDatasetCollectionOneElementInNewDataset() {
         HistoryDatasetAssociation newlyUploadedFile = createNewlyUploadedFileInNewHistory();
         HistoryDatasetCollectionAssociation newlyCreatedDataset = client.createDatasetCollection(GALAXY_API_KEY, newlyUploadedFile.getHistoryId(),TEST_CREATE_NEW_SINGLE_DATASET,
-                fileToUpload.getName(),newlyUploadedFile.getDatasetId());
+               Map.of(fileToUpload.getName(),newlyUploadedFile.getDatasetId()));
         assertEquals(TEST_CREATE_NEW_SINGLE_DATASET, newlyCreatedDataset.getName());
+    }
+    @EnabledIfSystemProperty(named = "nightly", matches = "true")
+    @Test
+    public void testCreateDatasetCollectionTwoElementsInNewDataset() {
+        HistoryDatasetAssociation newlyUploadedFile1 = createNewlyUploadedFileInNewHistory();
+        HistoryDatasetAssociation newlyUploadedFile2 = createNewlyUploadedFileInExistingHistory(newlyUploadedFile1.getHistoryId(),reversePairFileToUpload);
+        HistoryDatasetCollectionAssociation newlyCreatedDataset = client.createDatasetCollection(GALAXY_API_KEY, newlyUploadedFile1.getHistoryId(),TEST_CREATE_NEW_SINGLE_DATASET_TWO_ITEMS,
+            Map.of(fileToUpload.getName(),newlyUploadedFile1.getDatasetId(), reversePairFileToUpload.getName(),newlyUploadedFile2.getDatasetId()));
+        assertEquals(TEST_CREATE_NEW_SINGLE_DATASET_TWO_ITEMS, newlyCreatedDataset.getName());
     }
 
     @EnabledIfSystemProperty(named = "nightly", matches = "true")

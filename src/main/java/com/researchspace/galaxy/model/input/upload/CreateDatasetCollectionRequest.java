@@ -2,9 +2,10 @@ package com.researchspace.galaxy.model.input.upload;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.Getter;
-
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import lombok.Getter;
 
 @Getter
 @JsonIgnoreProperties(ignoreUnknown = true)
@@ -33,12 +34,13 @@ public class CreateDatasetCollectionRequest {
 
   private final String type = "dataset_collection";
 
-  public CreateDatasetCollectionRequest(String collectionName, String dataFileName,
-      String dataId, String historyId) {
+  public CreateDatasetCollectionRequest(String collectionName, Map<String,String> dataFileNamesToIds,
+      String historyId) {
     this.collectionName = collectionName;
-    this.data = List.of(
-        new ElementIdentifier(dataFileName,dataId,"hda")
-    );
+    this.data = new ArrayList<>();
+    for(String dataFileName: dataFileNamesToIds.keySet()) {
+      data.add(new ElementIdentifier(dataFileName, dataFileNamesToIds.get(dataFileName), "hda"));
+    }
     this.historyId = historyId;
   }
 

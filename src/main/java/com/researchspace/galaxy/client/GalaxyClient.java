@@ -7,6 +7,7 @@ import com.researchspace.galaxy.model.output.upload.UploadFileResponse;
 import com.researchspace.galaxy.model.output.workflow.WorkflowInvocationResponse;
 import com.researchspace.galaxy.model.output.workflow.WorkflowInvocationStepStatusResponse;
 import com.researchspace.galaxy.model.output.workflow.WorkflowInvocationSummaryStatusResponse;
+import java.util.Map;
 import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.ResourceAccessException;
 
@@ -49,9 +50,12 @@ public interface GalaxyClient {
             String datasetIdForward, String datasetIdReverse)
             throws HttpServerErrorException;
 
-    HistoryDatasetCollectionAssociation createDatasetCollection(String apiKey, String historyId, String collectionName, String dataFileName, String dataId) throws HttpServerErrorException;
 
-    /***
+  HistoryDatasetCollectionAssociation createDatasetCollection(String apiKey, String historyId,
+      String collectionName,
+      Map<String, String> dataFileNamesToIds) throws HttpServerErrorException;
+
+  /***
      * Using the given datasetID, invokes a workflow
      * @param apiKey
      * @param workflowId
