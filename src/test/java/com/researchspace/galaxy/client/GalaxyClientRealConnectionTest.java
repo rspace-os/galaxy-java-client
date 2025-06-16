@@ -109,6 +109,7 @@ public class GalaxyClientRealConnectionTest {
                Map.of(fileToUpload.getName(),newlyUploadedFile.getDatasetId()));
         assertEquals(TEST_CREATE_NEW_SINGLE_DATASET, newlyCreatedDataset.getName());
     }
+
     @EnabledIfSystemProperty(named = "nightly", matches = "true")
     @Test
     public void testCreateDatasetCollectionTwoElementsInNewDataset() {
@@ -117,6 +118,16 @@ public class GalaxyClientRealConnectionTest {
         HistoryDatasetCollectionAssociation newlyCreatedDataset = client.createDatasetCollection(GALAXY_API_KEY, newlyUploadedFile1.getHistoryId(),TEST_CREATE_NEW_SINGLE_DATASET_TWO_ITEMS,
             Map.of(fileToUpload.getName(),newlyUploadedFile1.getDatasetId(), reversePairFileToUpload.getName(),newlyUploadedFile2.getDatasetId()));
         assertEquals(TEST_CREATE_NEW_SINGLE_DATASET_TWO_ITEMS, newlyCreatedDataset.getName());
+    }
+
+    @EnabledIfSystemProperty(named = "nightly", matches = "true")
+    @Test
+    public void testGetDataSetCollectionDetailsHasElementWithUUIDMatchingDataFileUpload() {
+        HistoryDatasetAssociation newlyUploadedFile = createNewlyUploadedFileInNewHistory();
+        HistoryDatasetCollectionAssociation newlyCreatedDataset = client.createDatasetCollection(GALAXY_API_KEY, newlyUploadedFile.getHistoryId(),TEST_CREATE_NEW_SINGLE_DATASET,
+            Map.of(fileToUpload.getName(),newlyUploadedFile.getDatasetId()));
+        HistoryDatasetCollectionAssociation newlyCreatedDatasetDetails = client.getDataSetCollectionDetails(GALAXY_API_KEY, newlyUploadedFile.getHistoryId(),newlyCreatedDataset.getDatasetId());
+        assertEquals(newlyUploadedFile.getUuid(), newlyCreatedDatasetDetails.getElements().get(0).getObject().getUuid());
     }
 
     @EnabledIfSystemProperty(named = "nightly", matches = "true")

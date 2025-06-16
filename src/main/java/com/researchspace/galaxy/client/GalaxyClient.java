@@ -93,4 +93,7 @@ public interface GalaxyClient {
      * @return
      */
     WorkflowInvocationStepStatusResponse getWorkflowInvocationData(String apiKey, String invocationId);
+
+  HistoryDatasetCollectionAssociation getDataSetCollectionDetails(String apiKey,
+      String historyId, String dataSetId);
 }

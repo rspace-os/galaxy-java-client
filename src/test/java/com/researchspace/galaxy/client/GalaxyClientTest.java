@@ -139,6 +139,21 @@ public class GalaxyClientTest {
         Map.of("datafileName", "dataFileID"));
     assertNotNull(response);
   }
+  @Test
+  public void testGetDataSetCollectionDetailsShouldSucceed() throws Exception {
+    String apiKey = "key123";
+    HistoryDatasetCollectionAssociation expectedResponse = new HistoryDatasetCollectionAssociation();
+    mockServer.expect(requestTo("https://usegalaxy.eu/api/histories/history123/contents/dataset_collections/datasetid"))
+        .andExpect(method(HttpMethod.GET))
+        .andExpect(header("x-api-key", apiKey))
+        .andRespond(withStatus(HttpStatus.OK)
+            .contentType(MediaType.APPLICATION_JSON)
+            .body(objectMapper.writeValueAsString(expectedResponse)));
+    HistoryDatasetCollectionAssociation response = galaxyClient.getDataSetCollectionDetails ("key123",
+        "history123", "datasetid");
+    assertNotNull(response);
+  }
+
     @Test
     public void testCreateDataSetCollectionMultipleDataItemsShouldSucceed() throws Exception {
         String apiKey = "key123";
