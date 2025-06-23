@@ -7,6 +7,7 @@ import com.researchspace.galaxy.model.input.workflow.WorkflowInvocationRequest;
 import com.researchspace.galaxy.model.output.history.History;
 import com.researchspace.galaxy.model.output.upload.HistoryDatasetCollectionAssociation;
 import com.researchspace.galaxy.model.output.upload.UploadFileResponse;
+import com.researchspace.galaxy.model.output.workflow.WorkflowInvocationReport;
 import com.researchspace.galaxy.model.output.workflow.WorkflowInvocationResponse;
 import com.researchspace.galaxy.model.output.workflow.WorkflowInvocationStepStatusResponse;
 import com.researchspace.galaxy.model.output.workflow.WorkflowInvocationSummaryStatusResponse;
@@ -189,6 +190,20 @@ public class GalaxyClientImpl implements GalaxyClient {
         WorkflowInvocationStepStatusResponse.class).getBody();
     return response;
   }
+
+  @Override
+  public WorkflowInvocationReport getWorkflowInvocationReport(String apiKey,
+      String invocationId) {
+    HttpHeaders headers = new HttpHeaders();
+    headers.add("x-api-key", apiKey);
+    WorkflowInvocationReport response = restTemplate.exchange(
+        galaxyApiUrl + "/invocations/" + invocationId + "/report",
+        HttpMethod.GET,
+        new HttpEntity<>(null, headers),
+        WorkflowInvocationReport.class).getBody();
+    return response;
+  }
+
 
   @Override
   public HistoryDatasetCollectionAssociation getDataSetCollectionDetails(String apiKey,

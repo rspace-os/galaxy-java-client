@@ -4,6 +4,7 @@ import com.researchspace.galaxy.model.input.workflow.WorkflowInvocationRequest;
 import com.researchspace.galaxy.model.output.history.History;
 import com.researchspace.galaxy.model.output.upload.HistoryDatasetCollectionAssociation;
 import com.researchspace.galaxy.model.output.upload.UploadFileResponse;
+import com.researchspace.galaxy.model.output.workflow.WorkflowInvocationReport;
 import com.researchspace.galaxy.model.output.workflow.WorkflowInvocationResponse;
 import com.researchspace.galaxy.model.output.workflow.WorkflowInvocationStepStatusResponse;
 import com.researchspace.galaxy.model.output.workflow.WorkflowInvocationSummaryStatusResponse;
@@ -93,6 +94,15 @@ public interface GalaxyClient {
      * @return
      */
     WorkflowInvocationStepStatusResponse getWorkflowInvocationData(String apiKey, String invocationId);
+
+  /**
+   * The report for an invocation contains the 'title' which is the invoked workflow name.
+   * @param apiKey
+   * @param invocationId
+   * @return
+   */
+   WorkflowInvocationReport getWorkflowInvocationReport(String apiKey,
+      String invocationId);
 
   HistoryDatasetCollectionAssociation getDataSetCollectionDetails(String apiKey,
       String historyId, String dataSetId);

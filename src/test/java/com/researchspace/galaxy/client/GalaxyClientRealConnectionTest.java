@@ -5,13 +5,13 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.researchspace.galaxy.model.input.workflow.PairedEndRNAFastQsWorkflowInvocationRequest;
 import com.researchspace.galaxy.model.input.workflow.SingleReadRNAFastQsWorkflowInvocationRequest;
 import com.researchspace.galaxy.model.output.history.History;
 import com.researchspace.galaxy.model.output.upload.HistoryDatasetAssociation;
 import com.researchspace.galaxy.model.output.upload.HistoryDatasetCollectionAssociation;
 import com.researchspace.galaxy.model.output.upload.UploadFileResponse;
+import com.researchspace.galaxy.model.output.workflow.WorkflowInvocationReport;
 import com.researchspace.galaxy.model.output.workflow.WorkflowInvocationResponse;
 import com.researchspace.galaxy.model.output.workflow.WorkflowInvocationStepStatusResponse;
 import com.researchspace.galaxy.model.output.workflow.WorkflowInvocationSummaryStatusResponse;
@@ -43,8 +43,8 @@ public class GalaxyClientRealConnectionTest {
     private static  final String TEST_EXISTING_PAIRED_RNA_DATASET_ID = TestProperties.getProperty("testExistingPairedRnaDatasetId");
     private static  final String TEST_EXISTING_SINGLE_RNA_DATASET_ID = TestProperties.getProperty("testExistingSingleRnaDatasetId");
     private static  final String TEST_EXISTING_INVOCATION_ID = TestProperties.getProperty("testExistingInvocationId");
+    private static final String TEST_EXISTING_WORKFLOW_NAME = TestProperties.getProperty("testExistingWorkflowName");
     private static final String GALAXY_URL = TestProperties.getProperty("galaxyUrl");
-    private ObjectMapper objectMapper = new ObjectMapper();
     private GalaxyClient client;
     private File fileToUpload;
     private File reversePairFileToUpload ;
@@ -144,7 +144,6 @@ public class GalaxyClientRealConnectionTest {
     @EnabledIfSystemProperty(named = "nightly", matches = "true")
     public void testInvokePairedEndRnaWorkflow() throws JsonProcessingException {
         PairedEndRNAFastQsWorkflowInvocationRequest request = new PairedEndRNAFastQsWorkflowInvocationRequest(TEST_EXISTING_HISTORY_ID,TEST_EXISTING_PAIRED_RNA_DATASET_ID);
-        System.out.println(objectMapper.writeValueAsString(request));
         List<WorkflowInvocationResponse> response = client.invokeWorkflow(GALAXY_API_KEY,request,TEST_EXISTING_PAIRED_END_RNA_WORKFLOW_ID);
         assertNotNull(response.get(0).getInvocationId());
         // Steps to see the running workflow invoked by this test in Galaxy GUI:
@@ -155,7 +154,6 @@ public class GalaxyClientRealConnectionTest {
     @EnabledIfSystemProperty(named = "nightly", matches = "true")
     public void testInvokeSingleEndRnaWorkflow() throws JsonProcessingException {
         SingleReadRNAFastQsWorkflowInvocationRequest request = new SingleReadRNAFastQsWorkflowInvocationRequest(TEST_EXISTING_HISTORY_ID,TEST_EXISTING_SINGLE_RNA_DATASET_ID);
-        System.out.println(objectMapper.writeValueAsString(request));
         List<WorkflowInvocationResponse> response = client.invokeWorkflow(GALAXY_API_KEY,request,TEST_EXISTING_SINGLE_END_RNA_WORKFLOW_ID);
         assertNotNull(response.get(0).getInvocationId());
         // Steps to see the running workflow invoked by this test in Galaxy GUI:
@@ -190,6 +188,17 @@ public class GalaxyClientRealConnectionTest {
     public void testGetWorkflowInvocationData() {
         WorkflowInvocationStepStatusResponse response =  client.getWorkflowInvocationData(GALAXY_API_KEY,TEST_EXISTING_INVOCATION_ID);
         assertEquals(response.getInvocationId(), TEST_EXISTING_INVOCATION_ID);
+    }
+
+
+    /**
+     * Requires there to be an existing invocation on a Galaxy instance with ID = TEST_EXISTING_INVOCATION_ID
+     */
+    @Test
+    @EnabledIfSystemProperty(named = "nightly", matches = "true")
+    public void testGetWorkflowInvocationReport() {
+        WorkflowInvocationReport response =  client.getWorkflowInvocationReport(GALAXY_API_KEY,TEST_EXISTING_INVOCATION_ID);
+        assertEquals(TEST_EXISTING_WORKFLOW_NAME, response.getTitle());
     }
 
 }
