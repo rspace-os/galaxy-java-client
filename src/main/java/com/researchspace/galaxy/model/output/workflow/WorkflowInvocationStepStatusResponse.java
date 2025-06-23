@@ -58,6 +58,6 @@ public class WorkflowInvocationStepStatusResponse {
   @JsonProperty("output_values")
   private Object outputValues;
 
-  private List<String> messages;
+  private List<WorkFlowMessage> messages;
 
 }
