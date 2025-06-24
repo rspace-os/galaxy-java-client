@@ -1,11 +1,9 @@
 package com.researchspace.galaxy.model.output.upload;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.researchspace.core.util.jsonserialisers.ISO8601DateTimeDeserialiser;
-import com.researchspace.core.util.jsonserialisers.ISO8601DateTimeSerialiser;
+import java.util.Date;
 import java.util.List;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -44,15 +42,13 @@ public class HistoryDatasetAssociation {
   @JsonProperty("file_size")
   private int fileSize;
 
-  @JsonSerialize(using = ISO8601DateTimeSerialiser.class)
-  @JsonDeserialize(using = ISO8601DateTimeDeserialiser.class)
+  @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSSSS", timezone = "UTC")
   @JsonProperty("create_time")
-  private Long createTime;
+  private Date createTime;
 
-  @JsonSerialize(using = ISO8601DateTimeSerialiser.class)
-  @JsonDeserialize(using = ISO8601DateTimeDeserialiser.class)
+  @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSSSS", timezone = "UTC")
   @JsonProperty("update_time")
-  private Long updateTime;
+  private Date updateTime;
 
   @JsonProperty("data_type")
   private String dataType;
