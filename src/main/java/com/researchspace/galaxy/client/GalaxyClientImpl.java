@@ -2,9 +2,11 @@ package com.researchspace.galaxy.client;
 
 import com.researchspace.galaxy.model.input.upload.CreateDatasetCollectionOfPairsRequest;
 import com.researchspace.galaxy.model.input.upload.CreateDatasetCollectionRequest;
+import com.researchspace.galaxy.model.input.upload.PutAnnotationRequest;
 import com.researchspace.galaxy.model.input.upload.UploadFileRequest;
 import com.researchspace.galaxy.model.input.workflow.WorkflowInvocationRequest;
 import com.researchspace.galaxy.model.output.history.History;
+import com.researchspace.galaxy.model.output.upload.HistoryDatasetAssociation;
 import com.researchspace.galaxy.model.output.upload.HistoryDatasetCollectionAssociation;
 import com.researchspace.galaxy.model.output.upload.UploadFileResponse;
 import com.researchspace.galaxy.model.output.workflow.WorkflowInvocationReport;
@@ -13,6 +15,8 @@ import com.researchspace.galaxy.model.output.workflow.WorkflowInvocationStepStat
 import com.researchspace.galaxy.model.output.workflow.WorkflowInvocationSummaryStatusResponse;
 import io.tus.java.client.TusClient;
 import io.tus.java.client.TusUpload;
+import java.io.File;
+import java.util.List;
 import java.util.Map;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
@@ -29,9 +33,6 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.client.RestTemplate;
-
-import java.io.File;
-import java.util.List;
 
 @Slf4j
 @Component
@@ -92,6 +93,21 @@ public class GalaxyClientImpl implements GalaxyClient {
             UploadFileResponse.class).getBody();
     log.info(String.format("Upload to Galaxy of file %s successful", fileToUpload.getName()));
     return response;
+  }
+
+  @SneakyThrows
+  @Override
+  public HistoryDatasetAssociation putAnnotationOnDataset(String historyID, String datasetId,
+      String annotation, String apiKey)
+      throws HttpServerErrorException {
+    HttpHeaders headers = new HttpHeaders();
+    headers.add("x-api-key", apiKey);
+    PutAnnotationRequest putAnnotationRequest = new  PutAnnotationRequest(annotation);
+    return restTemplate.exchange(
+        galaxyApiUrl + "/histories/" + historyID + "/contents/datasets/"+datasetId,
+        HttpMethod.PUT,
+        new HttpEntity<>(putAnnotationRequest, headers),
+        HistoryDatasetAssociation.class).getBody();
   }
 
   @Override

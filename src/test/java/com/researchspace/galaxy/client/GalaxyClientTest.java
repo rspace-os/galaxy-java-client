@@ -18,6 +18,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.researchspace.galaxy.model.input.workflow.SingleReadRNAFastQsWorkflowInvocationRequest;
 import com.researchspace.galaxy.model.input.workflow.WorkflowInvocationRequest;
 import com.researchspace.galaxy.model.output.history.History;
+import com.researchspace.galaxy.model.output.upload.HistoryDatasetAssociation;
 import com.researchspace.galaxy.model.output.upload.HistoryDatasetCollectionAssociation;
 import com.researchspace.galaxy.model.output.upload.UploadFileResponse;
 import com.researchspace.galaxy.model.output.workflow.WorkflowInvocationResponse;
@@ -335,6 +336,26 @@ public class GalaxyClientTest {
             .body(objectMapper.writeValueAsString(expectedResponse)));
     WorkflowInvocationStepStatusResponse response = galaxyClient.getWorkflowInvocationData(apiKey,
         invocationId);
+    assertNotNull(response);
+  }
+
+  @Test
+  public void testPutAnnotationOnDatasetShouldSucceed() throws Exception {
+    String apiKey = "key123";
+    String annotation = "a unit test";
+    String historyId = "history123";
+    String datasetId = "dataset123";
+    HistoryDatasetAssociation annotated = new HistoryDatasetAssociation();
+    mockServer.expect(requestTo(
+            "https://usegalaxy.eu/api/histories/" + historyId + "/contents/datasets/" + datasetId))
+        .andExpect(method(HttpMethod.PUT))
+        .andExpect(header("x-api-key", apiKey))
+        .andExpect(jsonPath("$.annotation").value("a unit test"))
+        .andRespond(withStatus(HttpStatus.OK)
+            .contentType(MediaType.APPLICATION_JSON)
+            .body(objectMapper.writeValueAsString(annotated)));
+    HistoryDatasetAssociation response = galaxyClient.putAnnotationOnDataset(historyId, datasetId,
+        annotation, apiKey);
     assertNotNull(response);
   }
 }

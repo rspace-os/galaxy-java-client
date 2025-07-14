@@ -45,6 +45,7 @@ public class GalaxyClientRealConnectionTest {
     private static  final String TEST_EXISTING_INVOCATION_ID = TestProperties.getProperty("testExistingInvocationId");
     private static final String TEST_EXISTING_WORKFLOW_NAME = TestProperties.getProperty("testExistingWorkflowName");
     private static final String GALAXY_URL = TestProperties.getProperty("galaxyUrl");
+    public static final String AN_INTEGRATION_TEST = "AN INTEGRATION TEST";
     private GalaxyClient client;
     private File fileToUpload;
     private File reversePairFileToUpload ;
@@ -108,6 +109,19 @@ public class GalaxyClientRealConnectionTest {
         HistoryDatasetCollectionAssociation newlyCreatedDataset = client.createDatasetCollection(GALAXY_API_KEY, newlyUploadedFile.getHistoryId(),TEST_CREATE_NEW_SINGLE_DATASET,
                Map.of(fileToUpload.getName(),newlyUploadedFile.getDatasetId()));
         assertEquals(TEST_CREATE_NEW_SINGLE_DATASET, newlyCreatedDataset.getName());
+    }
+
+    @EnabledIfSystemProperty(named = "nightly", matches = "true")
+    @Test
+    public void testPutAnnotationOnNewDatasetCollectionOneElementInNewDataset() {
+        HistoryDatasetAssociation newlyUploadedFile = createNewlyUploadedFileInNewHistory();
+        HistoryDatasetCollectionAssociation newlyCreatedDataset = client.createDatasetCollection(GALAXY_API_KEY, newlyUploadedFile.getHistoryId(),TEST_CREATE_NEW_SINGLE_DATASET,
+            Map.of(fileToUpload.getName(),newlyUploadedFile.getDatasetId()));
+        assertEquals(TEST_CREATE_NEW_SINGLE_DATASET, newlyCreatedDataset.getName());
+        HistoryDatasetAssociation annotated = client.putAnnotationOnDataset(
+            newlyCreatedDataset.getHistoryId(), newlyUploadedFile.getDatasetId(),
+            AN_INTEGRATION_TEST,GALAXY_API_KEY);
+        assertEquals(AN_INTEGRATION_TEST,annotated.getAnnotation());
     }
 
     @EnabledIfSystemProperty(named = "nightly", matches = "true")

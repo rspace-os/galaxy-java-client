@@ -2,6 +2,7 @@ package com.researchspace.galaxy.client;
 
 import com.researchspace.galaxy.model.input.workflow.WorkflowInvocationRequest;
 import com.researchspace.galaxy.model.output.history.History;
+import com.researchspace.galaxy.model.output.upload.HistoryDatasetAssociation;
 import com.researchspace.galaxy.model.output.upload.HistoryDatasetCollectionAssociation;
 import com.researchspace.galaxy.model.output.upload.UploadFileResponse;
 import com.researchspace.galaxy.model.output.workflow.WorkflowInvocationReport;
@@ -9,6 +10,7 @@ import com.researchspace.galaxy.model.output.workflow.WorkflowInvocationResponse
 import com.researchspace.galaxy.model.output.workflow.WorkflowInvocationStepStatusResponse;
 import com.researchspace.galaxy.model.output.workflow.WorkflowInvocationSummaryStatusResponse;
 import java.util.Map;
+import lombok.SneakyThrows;
 import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.ResourceAccessException;
 
@@ -47,7 +49,12 @@ public interface GalaxyClient {
     UploadFileResponse uploadFile(String historyID, String apiKey, File fieToUpload) throws HttpServerErrorException;
 
 
-    HistoryDatasetCollectionAssociation createDatasetCollectionOfPairs(String apiKey, String historyId, String collectionNameOfListOfPair,String pairName,
+  @SneakyThrows
+  HistoryDatasetAssociation putAnnotationOnDataset(String historyID, String datasetId,
+      String annotation, String apiKey)
+      throws HttpServerErrorException;
+
+  HistoryDatasetCollectionAssociation createDatasetCollectionOfPairs(String apiKey, String historyId, String collectionNameOfListOfPair,String pairName,
             String datasetIdForward, String datasetIdReverse)
             throws HttpServerErrorException;
 

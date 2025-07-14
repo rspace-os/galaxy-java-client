@@ -78,5 +78,6 @@ public class HistoryDatasetAssociation {
 
   @JsonProperty("output_name")
   private String outputName;
+  private String annotation;
 
 }
