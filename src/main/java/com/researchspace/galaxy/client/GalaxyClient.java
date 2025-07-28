@@ -1,114 +1,116 @@
 package com.researchspace.galaxy.client;
 
+import com.researchspace.galaxy.model.input.workflow.WorkflowInvocationRequest;
 import com.researchspace.galaxy.model.output.history.History;
+import com.researchspace.galaxy.model.output.upload.HistoryDatasetAssociation;
 import com.researchspace.galaxy.model.output.upload.HistoryDatasetCollectionAssociation;
 import com.researchspace.galaxy.model.output.upload.UploadFileResponse;
+import com.researchspace.galaxy.model.output.workflow.WorkflowInvocationReport;
 import com.researchspace.galaxy.model.output.workflow.WorkflowInvocationResponse;
 import com.researchspace.galaxy.model.output.workflow.WorkflowInvocationStepStatusResponse;
 import com.researchspace.galaxy.model.output.workflow.WorkflowInvocationSummaryStatusResponse;
-import java.io.File;
-import java.io.IOException;
+import java.util.Map;
+import lombok.SneakyThrows;
 import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.ResourceAccessException;
 
-/*
- * This interface declares the operations that this library supports with
- * regard to the Galaxy API.
- */
+import java.io.File;
+import java.util.List;
+
 public interface GalaxyClient {
 
-  String PE_WORKFLOW_ID = "2d08a73dd8ff99e9";
-  String SE_WORKFLOW_ID = "87fea062a9646a31";
-  String SIMPLE_WORKFLOW_ID = "992cc472e5f300f1";
+    /**
+     * Sanity check - test the connection to Galaxy
+     *
+     * @param apiKey
+     * @return true if the server is existing and is up and running and api-key is correct
+     * @throws HttpServerErrorException
+     * @throws ResourceAccessException
+     */
+    boolean testConnection(String apiKey) throws HttpServerErrorException, ResourceAccessException;
 
+    /**
+     * Create a new history
+     *
+     * @param apiKey
+     * @return the new History_ID created
+     * @throws HttpServerErrorException
+     */
+    History createNewHistory(String apiKey, String historyName) throws HttpServerErrorException;
+
+    /***
+     * Upload a file into Galaxy
+     *
+     * @param apiKey
+     * @param fieToUpload
+     * @return the UploadFileOutput object describing the uploaded file
+     * @throws HttpServerErrorException
+     */
+    UploadFileResponse uploadFile(String historyID, String apiKey, File fieToUpload) throws HttpServerErrorException;
+
+
+  @SneakyThrows
+  HistoryDatasetAssociation putAnnotationOnDataset(String historyID, String datasetId,
+      String annotation, String apiKey)
+      throws HttpServerErrorException;
+
+  HistoryDatasetCollectionAssociation createDatasetCollectionOfPairs(String apiKey, String historyId, String collectionNameOfListOfPair,String pairName,
+            String datasetIdForward, String datasetIdReverse)
+            throws HttpServerErrorException;
+
+
+  HistoryDatasetCollectionAssociation createDatasetCollection(String apiKey, String historyId,
+      String collectionName,
+      Map<String, String> dataFileNamesToIds) throws HttpServerErrorException;
+
+  /***
+     * Using the given datasetID, invokes a workflow
+     * @param apiKey
+     * @param workflowId
+     * @return a response having the identification of the invocation
+     * @throws HttpServerErrorException
+     */
+    List<WorkflowInvocationResponse> invokeWorkflow(String apiKey, WorkflowInvocationRequest request,String workflowId)
+            throws HttpServerErrorException;
+
+    /**
+     * Returns all invocations for the given history ID, excluding nested invocations
+     * @param apiKey
+     * @param historyId
+     * @return
+     */
+    List<WorkflowInvocationResponse> getTopLevelInvocationsInAHistory(String apiKey, String historyId);
+
+
+    /***
+     *  Summary state of specific workflow invocation
+     *
+     * @param apiKey
+     * @param invocationId
+     * @return a response describing the overall/summary status of the workflow
+     * @throws HttpServerErrorException
+     */
+    WorkflowInvocationSummaryStatusResponse getWorkflowInvocatioSummaryStatus(String apiKey,
+            String invocationId)
+            throws HttpServerErrorException;
+
+    /**
+     * Gives detailed information about a workflow invocation, including which datasets were used as 'inputs'
+     * @param apiKey
+     * @param invocationId
+     * @return
+     */
+    WorkflowInvocationStepStatusResponse getWorkflowInvocationData(String apiKey, String invocationId);
 
   /**
-   * This method is in charge to test the connection
-   *
-   * @param apiKey
-   * @return true if the server is existing and is up and running and api-key is correct
-   * @throws HttpServerErrorException
-   * @throws ResourceAccessException
-   */
-  boolean testConnection(String apiKey) throws HttpServerErrorException, ResourceAccessException;
-
-  /**
-   * This method is in charge to create a new history
-   *
-   * @param apiKey
-   * @return the new History_ID created
-   * @throws HttpServerErrorException
-   */
-  History createNewHistory(String apiKey, String historyName) throws HttpServerErrorException;
-
-  /***
-   * This method is in charge to upload a file into Galaxy
-   *
-   * @param apiKey
-   * @param fieToUpload
-   * @return the UploadFileOutput object describing the uploaded file
-   * @throws HttpServerErrorException
-   */
-  UploadFileResponse uploadFile(String apiKey, File fieToUpload) throws HttpServerErrorException;
-
-
-  HistoryDatasetCollectionAssociation createDatasetCollectionOfPairs(String apiKey,
-      String historyId, String nameListOfPair, String collectionName,
-      String datasetIdForward, String DataserIdReverse)
-      throws HttpServerErrorException;
-
-
-  /***
-   * This method is in charge to invoke a specific workflow giving a given dataset as input
-   *
-   * @param apiKey
-   * @param workflowId
-   * @param datasetId
-   * @return a response having the identification of the invocation
-   * @throws HttpServerErrorException
-   */
-  WorkflowInvocationResponse invokeWorkflow(String apiKey, String historyId,
-      String workflowId, String datasetId)
-      throws HttpServerErrorException;
-
-
-  /***
-   *  This method is in charge to check the status of a specific workflow invocation
-   *
+   * The report for an invocation contains the 'title' which is the invoked workflow name.
    * @param apiKey
    * @param invocationId
-   * @return a response describing the overall/summary status of the workflow
-   * @throws HttpServerErrorException
+   * @return
    */
-  WorkflowInvocationSummaryStatusResponse getWorkflowInvocationOverallStatus(String apiKey,
-      String invocationId)
-      throws HttpServerErrorException;
+   WorkflowInvocationReport getWorkflowInvocationReport(String apiKey,
+      String invocationId);
 
-  /***
-   *  This method is in charge to check the status of a specific workflow invocation
-   *
-   * @param apiKey
-   * @param invocationId
-   * @return a response describing step by step
-   * @throws HttpServerErrorException
-   */
-  WorkflowInvocationStepStatusResponse getWorkflowStepsInvocationStatus(String apiKey,
-      String invocationId)
-      throws HttpServerErrorException;
-
-  /***
-   * This method is in charge to get the link for a specific history where a workflow
-   * invocation ran
-   *
-   * @param apiKey
-   * @param invocationId
-   * @return the file result object
-   * @throws HttpServerErrorException
-   * @throws IOException
-   */
-  String getHistoryLink(String apiKey, String invocationId)
-      throws HttpServerErrorException, IOException;
-  // https://usegalaxy.eu/histories/view?id=cbc8d9f78aef06cd
-
-
+  HistoryDatasetCollectionAssociation getDataSetCollectionDetails(String apiKey,
+      String historyId, String dataSetId);
 }

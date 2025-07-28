@@ -1,17 +1,17 @@
 package com.researchspace.galaxy.model.output.workflow;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.researchspace.core.util.jsonserialisers.ISO8601DateTimeDeserialiser;
-import com.researchspace.core.util.jsonserialisers.ISO8601DateTimeSerialiser;
+import java.util.Date;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
 @JsonIgnoreProperties(ignoreUnknown = true)
+@EqualsAndHashCode(of = { "invocationId"})
 public class WorkflowInvocationResponse {
 
   @JsonProperty("model_class")
@@ -20,23 +20,22 @@ public class WorkflowInvocationResponse {
   @JsonProperty("id")
   private String invocationId;
 
-  @JsonSerialize(using = ISO8601DateTimeSerialiser.class)
-  @JsonDeserialize(using = ISO8601DateTimeDeserialiser.class)
+  @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSSSS", timezone = "UTC")
   @JsonProperty("create_time")
-  private Long createTime;
+  private Date createTime;
 
-  @JsonSerialize(using = ISO8601DateTimeSerialiser.class)
-  @JsonDeserialize(using = ISO8601DateTimeDeserialiser.class)
+  @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSSSS", timezone = "UTC")
   @JsonProperty("update_time")
-  private Long updateTime;
+  private Date updateTime;
 
   @JsonProperty("workflow_id")
   private String workflowId;
 
   @JsonProperty("history_id")
   private String historyId;
-
+  @JsonProperty("uuid")
   private String uuid;
+  @JsonProperty("state")
   private String state;
 
 }

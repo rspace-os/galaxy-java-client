@@ -3,19 +3,23 @@ package com.researchspace.galaxy.model.input.workflow;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.researchspace.galaxy.client.GalaxyClient;
 import lombok.Getter;
 
+/**
+ * This class is hard coded to work with the Galaxy workflow with ID 87fea062a9646a31 :
+ * RNA-seq for Single-read fastqs (release v1.2)
+ * The hard coded values are purely examples of what can be used
+ */
 @Getter
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class SEWorkflowInvocationRequest extends WorkflowInvocationRequest {
+public class SingleReadRNAFastQsWorkflowInvocationRequest extends WorkflowInvocationRequest {
 
   @JsonIgnore
-  private final String id = GalaxyClient.SE_WORKFLOW_ID;
+  public static final String forWorkFlowWithId = "87fea062a9646a31";
 
   private final SEInputs inputs;
 
-  public SEWorkflowInvocationRequest(String historyId, String datasetId) {
+  public SingleReadRNAFastQsWorkflowInvocationRequest(String historyId, String datasetId) {
     super(historyId);
     this.inputs = new SEInputs(datasetId);
   }
@@ -24,7 +28,7 @@ public class SEWorkflowInvocationRequest extends WorkflowInvocationRequest {
   @JsonIgnoreProperties(ignoreUnknown = true)
   public static class SEInputs {
 
-    private static final String INTERNAL_HDCA = "3e6fb6399b460cfb";
+    private static final String INTERNAL_HDA = "4838ba20a6d8676517a6a029b53330a0";
 
     @JsonProperty("0")
     private final DatasetInput zero;
@@ -39,7 +43,7 @@ public class SEWorkflowInvocationRequest extends WorkflowInvocationRequest {
     private final String third = "apiMel3";
 
     @JsonProperty("4")
-    private final DatasetInput forth;
+    private final DatasetInput fourth;
 
     @JsonProperty("5")
     private final String fifth = "stranded - forward";
@@ -57,8 +61,8 @@ public class SEWorkflowInvocationRequest extends WorkflowInvocationRequest {
     private final boolean ninth = false;
 
     protected SEInputs(String datasetId) {
-      this.zero = new DatasetInput(INTERNAL_HDCA, "hdca");
-      this.forth = new DatasetInput(datasetId);
+      this.fourth = new DatasetInput(INTERNAL_HDA, "hda");
+      this.zero = new DatasetInput(datasetId,"hdca");
     }
 
   }

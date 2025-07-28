@@ -3,19 +3,23 @@ package com.researchspace.galaxy.model.input.workflow;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.researchspace.galaxy.client.GalaxyClient;
 import lombok.Getter;
 
+/**
+ * This class is hard coded to work with the Galaxy workflow 2d08a73dd8ff99e9 :
+ * RNA-seq for Paired-end fastqs (release v1.2)
+ * The hard coded values are purely examples of what can be used
+ */
 @Getter
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class PEWorkflowInvocationRequest extends WorkflowInvocationRequest {
+public class PairedEndRNAFastQsWorkflowInvocationRequest extends WorkflowInvocationRequest {
 
   @JsonIgnore
-  private final String id = GalaxyClient.PE_WORKFLOW_ID;
+  public static final String forWorkFlowWithId = "2d08a73dd8ff99e9";
 
   private final PEInputs inputs;
 
-  public PEWorkflowInvocationRequest(String historyId, String datasetId) {
+  public PairedEndRNAFastQsWorkflowInvocationRequest(String historyId, String datasetId) {
     super(historyId);
     this.inputs = new PEInputs(datasetId);
   }
@@ -24,7 +28,7 @@ public class PEWorkflowInvocationRequest extends WorkflowInvocationRequest {
   @JsonIgnoreProperties(ignoreUnknown = true)
   public static class PEInputs {
 
-    private static final String INTERNAL_HDCA = "4c43511826fb67eb";
+    private static final String INTERNAL_HDA = "4838ba20a6d8676517a6a029b53330a0";
 
     @JsonProperty("0")
     private final DatasetInput zero;
@@ -61,8 +65,8 @@ public class PEWorkflowInvocationRequest extends WorkflowInvocationRequest {
 
 
     protected PEInputs(String datasetId) {
-      this.zero = new DatasetInput(INTERNAL_HDCA, "hdca");
-      this.fifth = new DatasetInput(datasetId);
+      this.fifth = new DatasetInput(INTERNAL_HDA, "hda");
+      this.zero = new DatasetInput(datasetId,"hdca");
     }
   }
 
