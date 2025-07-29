@@ -4,10 +4,10 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.researchspace.galaxy.model.input.workflow.PairedEndRNAFastQsWorkflowInvocationRequest;
 import com.researchspace.galaxy.model.input.workflow.SingleReadRNAFastQsWorkflowInvocationRequest;
 import com.researchspace.galaxy.model.output.history.History;
+import com.researchspace.galaxy.model.output.upload.DataSet;
 import com.researchspace.galaxy.model.output.upload.HistoryDatasetAssociation;
 import com.researchspace.galaxy.model.output.upload.HistoryDatasetCollectionAssociation;
 import com.researchspace.galaxy.model.output.upload.UploadFileResponse;
@@ -143,6 +143,16 @@ public class GalaxyClientRealConnectionTest {
         HistoryDatasetCollectionAssociation newlyCreatedDatasetDetails = client.getDataSetCollectionDetails(GALAXY_API_KEY, newlyUploadedFile.getHistoryId(),newlyCreatedDataset.getDatasetId());
         assertEquals(newlyUploadedFile.getUuid(), newlyCreatedDatasetDetails.getElements().get(0).getObject().getUuid());
     }
+    @EnabledIfSystemProperty(named = "nightly", matches = "true")
+    @Test
+    public void testGetDataSet() {
+        HistoryDatasetAssociation newlyUploadedFile = createNewlyUploadedFileInNewHistory();
+        HistoryDatasetCollectionAssociation newlyCreatedDataset = client.createDatasetCollection(GALAXY_API_KEY, newlyUploadedFile.getHistoryId(),TEST_CREATE_NEW_SINGLE_DATASET,
+            Map.of(fileToUpload.getName(),newlyUploadedFile.getDatasetId()));
+        HistoryDatasetCollectionAssociation newlyCreatedDatasetDetails = client.getDataSetCollectionDetails(GALAXY_API_KEY, newlyUploadedFile.getHistoryId(),newlyCreatedDataset.getDatasetId());
+        DataSet dataset = client.getDataSetDetails(GALAXY_API_KEY, newlyCreatedDatasetDetails.getElements().get(0).getObject().getId());
+        assertEquals(newlyUploadedFile.getUuid(), dataset.getUuid());
+    }
 
     @EnabledIfSystemProperty(named = "nightly", matches = "true")
     @Test
@@ -156,7 +166,7 @@ public class GalaxyClientRealConnectionTest {
 
     @Test
     @EnabledIfSystemProperty(named = "nightly", matches = "true")
-    public void testInvokePairedEndRnaWorkflow() throws JsonProcessingException {
+    public void testInvokePairedEndRnaWorkflow() {
         PairedEndRNAFastQsWorkflowInvocationRequest request = new PairedEndRNAFastQsWorkflowInvocationRequest(TEST_EXISTING_HISTORY_ID,TEST_EXISTING_PAIRED_RNA_DATASET_ID);
         List<WorkflowInvocationResponse> response = client.invokeWorkflow(GALAXY_API_KEY,request,TEST_EXISTING_PAIRED_END_RNA_WORKFLOW_ID);
         assertNotNull(response.get(0).getInvocationId());
@@ -166,7 +176,7 @@ public class GalaxyClientRealConnectionTest {
 
     @Test
     @EnabledIfSystemProperty(named = "nightly", matches = "true")
-    public void testInvokeSingleEndRnaWorkflow() throws JsonProcessingException {
+    public void testInvokeSingleEndRnaWorkflow() {
         SingleReadRNAFastQsWorkflowInvocationRequest request = new SingleReadRNAFastQsWorkflowInvocationRequest(TEST_EXISTING_HISTORY_ID,TEST_EXISTING_SINGLE_RNA_DATASET_ID);
         List<WorkflowInvocationResponse> response = client.invokeWorkflow(GALAXY_API_KEY,request,TEST_EXISTING_SINGLE_END_RNA_WORKFLOW_ID);
         assertNotNull(response.get(0).getInvocationId());

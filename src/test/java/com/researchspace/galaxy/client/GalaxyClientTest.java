@@ -18,6 +18,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.researchspace.galaxy.model.input.workflow.SingleReadRNAFastQsWorkflowInvocationRequest;
 import com.researchspace.galaxy.model.input.workflow.WorkflowInvocationRequest;
 import com.researchspace.galaxy.model.output.history.History;
+import com.researchspace.galaxy.model.output.upload.DataSet;
 import com.researchspace.galaxy.model.output.upload.HistoryDatasetAssociation;
 import com.researchspace.galaxy.model.output.upload.HistoryDatasetCollectionAssociation;
 import com.researchspace.galaxy.model.output.upload.UploadFileResponse;
@@ -152,6 +153,21 @@ public class GalaxyClientTest {
             .body(objectMapper.writeValueAsString(expectedResponse)));
     HistoryDatasetCollectionAssociation response = galaxyClient.getDataSetCollectionDetails ("key123",
         "history123", "datasetid");
+    assertNotNull(response);
+  }
+
+  @Test
+  public void testGetDataSetDetailsShouldSucceed() throws Exception {
+    String apiKey = "key123";
+    DataSet expectedResponse = new DataSet();
+    mockServer.expect(requestTo("https://usegalaxy.eu/api/datasets/datasetid"))
+        .andExpect(method(HttpMethod.GET))
+        .andExpect(header("x-api-key", apiKey))
+        .andRespond(withStatus(HttpStatus.OK)
+            .contentType(MediaType.APPLICATION_JSON)
+            .body(objectMapper.writeValueAsString(expectedResponse)));
+    DataSet response = galaxyClient.getDataSetDetails ("key123",
+         "datasetid");
     assertNotNull(response);
   }
 

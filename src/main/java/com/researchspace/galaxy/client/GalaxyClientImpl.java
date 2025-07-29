@@ -6,6 +6,7 @@ import com.researchspace.galaxy.model.input.upload.PutAnnotationRequest;
 import com.researchspace.galaxy.model.input.upload.UploadFileRequest;
 import com.researchspace.galaxy.model.input.workflow.WorkflowInvocationRequest;
 import com.researchspace.galaxy.model.output.history.History;
+import com.researchspace.galaxy.model.output.upload.DataSet;
 import com.researchspace.galaxy.model.output.upload.HistoryDatasetAssociation;
 import com.researchspace.galaxy.model.output.upload.HistoryDatasetCollectionAssociation;
 import com.researchspace.galaxy.model.output.upload.UploadFileResponse;
@@ -231,6 +232,18 @@ public class GalaxyClientImpl implements GalaxyClient {
         HttpMethod.GET,
         new HttpEntity<>(null, headers),
         HistoryDatasetCollectionAssociation.class).getBody();
+    return response;
+  }
+
+  @Override
+  public DataSet getDataSetDetails(String apiKey, String dataSetId) {
+    HttpHeaders headers = new HttpHeaders();
+    headers.add("x-api-key", apiKey);
+    DataSet response = restTemplate.exchange(
+        galaxyApiUrl + "/datasets/" + dataSetId,
+        HttpMethod.GET,
+        new HttpEntity<>(null, headers),
+        DataSet.class).getBody();
     return response;
   }
 }
