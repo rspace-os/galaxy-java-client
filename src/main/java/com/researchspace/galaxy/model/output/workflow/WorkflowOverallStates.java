@@ -13,7 +13,7 @@ import lombok.SneakyThrows;
 public class WorkflowOverallStates {
 
   public enum NonTerminalStates {
-    new_, waiting, queued, running, resubmitted, upload;
+    new_, waiting, queued, running, resubmitted, submitted, upload;
 
     public static boolean contains(String test) {
       for (NonTerminalStates c : NonTerminalStates.values()) {
@@ -65,38 +65,44 @@ public class WorkflowOverallStates {
   }
 
   public enum OverAllState {
-    IN_PROGRESS,
-    COMPLETED,
-    CANCELLED,
-    FAILED;
+    Running,
+    Complete,
+    Cancelled,
+    Failed,
+    Unknown
   }
 
+  /**
+   * Any error or deleted jobs signal overall failure or cancellation, therefore their status
+   * is returned immediately.
+   */
   @SneakyThrows
   public OverAllState getState() {
+    OverAllState toReturn = null;
     Field[] allFields = this.getClass().getDeclaredFields();
-    for (int i = 0; i < allFields.length; i++) {
-      Field field = allFields[i];
+    for (Field field : allFields) {
       if (ErrorStates.contains(field.getName())) {
         if (field.getInt(this) > 0) {
-          return OverAllState.FAILED;
+          return OverAllState.Failed;
         }
       }
       if (CanceledStates.contains(field.getName())) {
         if (field.getInt(this) > 0) {
-          return OverAllState.CANCELLED;
+          return OverAllState.Cancelled;
         }
-      }
-      else if (NonTerminalStates.contains(field.getName())) {
+      } else if (NonTerminalStates.contains(field.getName())) {
         if (field.getInt(this) > 0) {
-          return OverAllState.IN_PROGRESS;
+          toReturn = OverAllState.Running;
         }
       } else if (TerminalStates.contains(field.getName())) {
         if (field.getInt(this) > 0) {
-          return OverAllState.COMPLETED;
+          if (toReturn == null) {
+            toReturn = OverAllState.Complete;
+          }
         }
       }
-
     }
+    return toReturn != null ? toReturn : OverAllState.Unknown;
   }
 
   private int ok;
