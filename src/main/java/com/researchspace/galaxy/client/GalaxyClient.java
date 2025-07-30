@@ -2,6 +2,7 @@ package com.researchspace.galaxy.client;
 
 import com.researchspace.galaxy.model.input.workflow.WorkflowInvocationRequest;
 import com.researchspace.galaxy.model.output.history.History;
+import com.researchspace.galaxy.model.output.upload.DataSet;
 import com.researchspace.galaxy.model.output.upload.HistoryDatasetAssociation;
 import com.researchspace.galaxy.model.output.upload.HistoryDatasetCollectionAssociation;
 import com.researchspace.galaxy.model.output.upload.UploadFileResponse;
@@ -9,13 +10,12 @@ import com.researchspace.galaxy.model.output.workflow.WorkflowInvocationReport;
 import com.researchspace.galaxy.model.output.workflow.WorkflowInvocationResponse;
 import com.researchspace.galaxy.model.output.workflow.WorkflowInvocationStepStatusResponse;
 import com.researchspace.galaxy.model.output.workflow.WorkflowInvocationSummaryStatusResponse;
+import java.io.File;
+import java.util.List;
 import java.util.Map;
 import lombok.SneakyThrows;
 import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.ResourceAccessException;
-
-import java.io.File;
-import java.util.List;
 
 public interface GalaxyClient {
 
@@ -111,6 +111,14 @@ public interface GalaxyClient {
    WorkflowInvocationReport getWorkflowInvocationReport(String apiKey,
       String invocationId);
 
+  /**
+   * For collection datasets associated with a history
+   */
   HistoryDatasetCollectionAssociation getDataSetCollectionDetails(String apiKey,
       String historyId, String dataSetId);
+
+  /**
+   * For datasets that are not part of collections
+   */
+  DataSet getDataSetDetails(String apiKey, String dataSetId);
 }
