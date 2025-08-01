@@ -22,6 +22,7 @@ public class WorkFlowOverallStatesTest {
     wos.setQueued(10);
     wos.setRunning(10);
     wos.setSkipped(100);
+    wos.setPaused(10);
     wos.setNew_(1);
     return wos;
   }
@@ -45,5 +46,13 @@ public class WorkFlowOverallStatesTest {
     wos.setSkipped(100);
     wos.setOk(100);
     assertEquals(OverAllState.Complete, wos.getState());
+  }
+
+  @Test
+  public void testPausedState(){
+    WorkflowOverallStates wos = new WorkflowOverallStates();
+    wos.setPaused(100);
+    wos.setOk(100);
+    assertEquals(OverAllState.Paused, wos.getState());
   }
 }

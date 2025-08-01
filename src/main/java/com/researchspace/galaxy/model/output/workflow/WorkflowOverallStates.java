@@ -13,7 +13,7 @@ import lombok.SneakyThrows;
 public class WorkflowOverallStates {
 
   public enum NonTerminalStates {
-    new_, waiting, queued, running, resubmitted, submitted, upload;
+    new_, waiting, queued, running, resubmitted, submitted, upload, paused;
 
     public static boolean contains(String test) {
       for (NonTerminalStates c : NonTerminalStates.values()) {
@@ -39,7 +39,7 @@ public class WorkflowOverallStates {
   }
 
   public enum TerminalStates {
-    paused, stopped, stop, ok, skipped;
+    stopped, stop, ok, skipped;
 
     public static boolean contains(String test) {
       for (TerminalStates c : TerminalStates.values()) {
@@ -69,6 +69,7 @@ public class WorkflowOverallStates {
     Complete,
     Cancelled,
     Failed,
+    Paused,
     Unknown
   }
 
@@ -85,18 +86,20 @@ public class WorkflowOverallStates {
         if (field.getInt(this) > 0) {
           toReturn = OverAllState.Cancelled;
         }
-      }
-      if (ErrorStates.contains(field.getName())) {
+      } else if (ErrorStates.contains(field.getName())) {
         if (field.getInt(this) > 0) {
           if (toReturn != OverAllState.Cancelled) {
             toReturn = OverAllState.Failed;
           }
         }
-      }
-      if (NonTerminalStates.contains(field.getName())) {
+      } else if (NonTerminalStates.contains(field.getName())) {
         if (field.getInt(this) > 0) {
           if (toReturn != OverAllState.Cancelled && toReturn != OverAllState.Failed) {
-            toReturn = OverAllState.Running;
+            if (field.getName().equals("paused") && toReturn != OverAllState.Running) {
+              toReturn = OverAllState.Paused;
+            } else {
+              toReturn = OverAllState.Running;
+            }
           }
         }
       } else if (TerminalStates.contains(field.getName())) {
