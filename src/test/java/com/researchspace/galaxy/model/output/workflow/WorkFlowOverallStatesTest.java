@@ -12,6 +12,7 @@ public class WorkFlowOverallStatesTest {
   public void testCancelledState(){
     WorkflowOverallStates wos = setupWos();
     wos.setDeleted(1);
+    wos.setError(1);
     assertEquals(OverAllState.Cancelled, wos.getState());
   }
 
@@ -21,6 +22,7 @@ public class WorkFlowOverallStatesTest {
     wos.setQueued(10);
     wos.setRunning(10);
     wos.setSkipped(100);
+    wos.setNew_(1);
     return wos;
   }
 
@@ -30,14 +32,17 @@ public class WorkFlowOverallStatesTest {
     wos.setError(1);
     assertEquals(OverAllState.Failed, wos.getState());
   }
+
   @Test
-  public void testInprogressState(){
+  public void testRunningState(){
     WorkflowOverallStates wos = setupWos();
     assertEquals(OverAllState.Running, wos.getState());
   }
+
   @Test
   public void testCompleteState(){
     WorkflowOverallStates wos = new WorkflowOverallStates();
+    wos.setSkipped(100);
     wos.setOk(100);
     assertEquals(OverAllState.Complete, wos.getState());
   }

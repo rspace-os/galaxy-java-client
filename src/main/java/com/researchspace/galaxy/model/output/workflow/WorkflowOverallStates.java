@@ -73,26 +73,31 @@ public class WorkflowOverallStates {
   }
 
   /**
-   * Any error or deleted jobs signal overall failure or cancellation, therefore their status
-   * is returned immediately.
+   * Any error or deleted jobs signal overall failure or cancellation Cancellation takes precedence
+   * over error and both than precedence over running which takes precedence over complete
    */
   @SneakyThrows
   public OverAllState getState() {
     OverAllState toReturn = null;
     Field[] allFields = this.getClass().getDeclaredFields();
     for (Field field : allFields) {
-      if (ErrorStates.contains(field.getName())) {
-        if (field.getInt(this) > 0) {
-          return OverAllState.Failed;
-        }
-      }
       if (CanceledStates.contains(field.getName())) {
         if (field.getInt(this) > 0) {
-          return OverAllState.Cancelled;
+          toReturn = OverAllState.Cancelled;
         }
-      } else if (NonTerminalStates.contains(field.getName())) {
+      }
+      if (ErrorStates.contains(field.getName())) {
         if (field.getInt(this) > 0) {
-          toReturn = OverAllState.Running;
+          if (toReturn != OverAllState.Cancelled) {
+            toReturn = OverAllState.Failed;
+          }
+        }
+      }
+      if (NonTerminalStates.contains(field.getName())) {
+        if (field.getInt(this) > 0) {
+          if (toReturn != OverAllState.Cancelled && toReturn != OverAllState.Failed) {
+            toReturn = OverAllState.Running;
+          }
         }
       } else if (TerminalStates.contains(field.getName())) {
         if (field.getInt(this) > 0) {
