@@ -5,7 +5,7 @@
   <modelVersion>4.0.0</modelVersion>
 
   <artifactId>galaxy-java-client</artifactId>
-  <version>RSDEV-639-Galaxy-Java-Client-SNAPSHOT</version>
+  <version>1.0.2</version>
   <parent>
     <groupId>com.github.rspace-os</groupId>
     <artifactId>rspace-os-parent</artifactId>
