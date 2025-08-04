@@ -74,8 +74,8 @@ public class WorkflowOverallStates {
   }
 
   /**
-   * Any error or deleted jobs signal overall failure or cancellation Cancellation takes precedence
-   * over error and both than precedence over running which takes precedence over complete
+   * Any error or deleted jobs signal overall failure or cancellation. Cancellation takes precedence
+   * over error and both then precedence over running. Running takes precedence over complete
    */
   @SneakyThrows
   public OverAllState getState() {
