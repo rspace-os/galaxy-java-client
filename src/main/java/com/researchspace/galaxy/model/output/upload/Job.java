@@ -1,6 +1,5 @@
 package com.researchspace.galaxy.model.output.upload;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.Date;
@@ -21,11 +20,9 @@ public class Job {
   @JsonProperty("exit_code")
   private Object exitCode;
 
-  @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSSSS", timezone = "UTC")
   @JsonProperty("update_time")
   private Date updateTime;
 
-  @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSSSS", timezone = "UTC")
   @JsonProperty("create_time")
   private Date createTime;
 

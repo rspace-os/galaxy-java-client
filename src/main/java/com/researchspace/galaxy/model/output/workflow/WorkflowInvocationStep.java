@@ -1,6 +1,5 @@
 package com.researchspace.galaxy.model.output.workflow;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.Date;
@@ -19,7 +18,6 @@ public class WorkflowInvocationStep {
 
   private String id;
 
-  @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSSSS", timezone = "UTC")
   @JsonProperty("update_time")
   private Date updateTime;
 

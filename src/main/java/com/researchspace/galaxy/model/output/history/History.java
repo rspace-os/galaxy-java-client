@@ -1,6 +1,5 @@
 package com.researchspace.galaxy.model.output.history;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.Date;
@@ -22,11 +21,9 @@ public class History {
   private boolean published;
   private int count;
 
-  @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSSSS", timezone = "UTC")
   @JsonProperty("create_time")
   private Date createTime;
 
-  @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSSSS", timezone = "UTC")
   @JsonProperty("update_time")
   private Date updateTime;
 
