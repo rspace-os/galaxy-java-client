@@ -29,7 +29,10 @@ public interface GalaxyClient {
      */
     boolean testConnection(String apiKey) throws HttpServerErrorException, ResourceAccessException;
 
-    /**
+  boolean testConnection(String apiKey, String url)
+      throws HttpServerErrorException, ResourceAccessException;
+
+  /**
      * Create a new history
      *
      * @param apiKey
@@ -38,7 +41,10 @@ public interface GalaxyClient {
      */
     History createNewHistory(String apiKey, String historyName) throws HttpServerErrorException;
 
-    /***
+  History createNewHistory(String apiKey, String historyName, String url)
+      throws HttpServerErrorException;
+
+  /***
      * Upload a file into Galaxy
      *
      * @param apiKey
@@ -50,18 +56,34 @@ public interface GalaxyClient {
 
 
   @SneakyThrows
+  UploadFileResponse uploadFile(String historyID, String apiKey, File fileToUpload, String url)
+      throws HttpServerErrorException;
+
+  @SneakyThrows
   HistoryDatasetAssociation putAnnotationOnDataset(String historyID, String datasetId,
       String annotation, String apiKey)
       throws HttpServerErrorException;
+
+  @SneakyThrows
+  HistoryDatasetAssociation putAnnotationOnDataset(String historyID, String datasetId,
+      String annotation, String apiKey, String url) throws HttpServerErrorException;
 
   HistoryDatasetCollectionAssociation createDatasetCollectionOfPairs(String apiKey, String historyId, String collectionNameOfListOfPair,String pairName,
             String datasetIdForward, String datasetIdReverse)
             throws HttpServerErrorException;
 
 
+  HistoryDatasetCollectionAssociation createDatasetCollectionOfPairs(String apiKey,
+      String historyId, String collectionNameOfListOfPair, String pairName,
+      String datasetIdForward, String datasetIdReverse, String url) throws HttpServerErrorException;
+
   HistoryDatasetCollectionAssociation createDatasetCollection(String apiKey, String historyId,
       String collectionName,
       Map<String, String> dataFileNamesToIds) throws HttpServerErrorException;
+
+  HistoryDatasetCollectionAssociation createDatasetCollection(String apiKey,
+      String historyId, String collectionName, Map<String, String> dataFileNamesToIds, String url)
+      throws HttpServerErrorException;
 
   /***
      * Using the given datasetID, invokes a workflow
@@ -73,7 +95,11 @@ public interface GalaxyClient {
     List<WorkflowInvocationResponse> invokeWorkflow(String apiKey, WorkflowInvocationRequest request,String workflowId)
             throws HttpServerErrorException;
 
-    /**
+  List<WorkflowInvocationResponse> invokeWorkflow(String apiKey,
+      WorkflowInvocationRequest request, String workflowId,
+      String url) throws HttpServerErrorException;
+
+  /**
      * Returns all invocations for the given history ID, excluding nested invocations
      * @param apiKey
      * @param historyId
@@ -82,7 +108,11 @@ public interface GalaxyClient {
     List<WorkflowInvocationResponse> getTopLevelInvocationsInAHistory(String apiKey, String historyId);
 
 
-    /***
+  @SuppressWarnings("unchecked")
+  List<WorkflowInvocationResponse> getTopLevelInvocationsInAHistory(String apiKey,
+      String historyId, String url);
+
+  /***
      *  Summary state of specific workflow invocation
      *
      * @param apiKey
@@ -94,13 +124,19 @@ public interface GalaxyClient {
             String invocationId)
             throws HttpServerErrorException;
 
-    /**
+  WorkflowInvocationSummaryStatusResponse getWorkflowInvocatioSummaryStatus(String apiKey,
+      String invocationId, String url) throws HttpServerErrorException;
+
+  /**
      * Gives detailed information about a workflow invocation, including which datasets were used as 'inputs'
      * @param apiKey
      * @param invocationId
      * @return
      */
     WorkflowInvocationStepStatusResponse getWorkflowInvocationData(String apiKey, String invocationId);
+
+  WorkflowInvocationStepStatusResponse getWorkflowInvocationData(String apiKey,
+      String invocationId, String url);
 
   /**
    * The report for an invocation contains the 'title' which is the invoked workflow name.
@@ -111,14 +147,22 @@ public interface GalaxyClient {
    WorkflowInvocationReport getWorkflowInvocationReport(String apiKey,
       String invocationId);
 
+  WorkflowInvocationReport getWorkflowInvocationReport(String apiKey,
+      String invocationId, String url);
+
   /**
    * For collection datasets associated with a history
    */
   HistoryDatasetCollectionAssociation getDataSetCollectionDetails(String apiKey,
       String historyId, String dataSetId);
 
+  HistoryDatasetCollectionAssociation getDataSetCollectionDetails(String apiKey,
+      String historyId, String dataSetId, String url);
+
   /**
    * For datasets that are not part of collections
    */
   DataSet getDataSetDetails(String apiKey, String dataSetId);
+
+  DataSet getDataSetDetails(String apiKey, String dataSetId, String url);
 }
