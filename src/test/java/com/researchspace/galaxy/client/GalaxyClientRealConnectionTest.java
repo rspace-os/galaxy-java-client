@@ -28,6 +28,7 @@ import org.springframework.test.util.ReflectionTestUtils;
  * Runs if two System properties are correct: "nightly" is set to "true" and GALAXY_API_KEY is set with a valid value for the Galaxy instance.
  */
 public class GalaxyClientRealConnectionTest {
+
     public static final String GALAXY_API_KEY = System.getProperty("GALAXY_API_KEY");
     public static final String TEST_CREATE_NEW_HISTORY = "testCreateNewHistory";
     public static final String TEST_CREATE_NEW_SINGLE_DATASET = "testCreateNewSingleDataset";
