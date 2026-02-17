@@ -1,6 +1,9 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [1.1.0]
+- switch parent pom from rspace-os-parent to rspace-parent (updates/changes a lot of dependencies)
+
 ## [1.0.0]
 - First version of the Galaxy java client
 
